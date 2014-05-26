@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+  <versions>
+    <swc version="1.2" />
+    <flex version="4.10.0" build="0" minimumSupportedVersion="3.0.0" />
+  </versions>
+  <features>
+    <feature-script-deps />
+    <feature-files />
+  </features>
+  <libraries>
+    <library path="library.swf">
+      <script name="so/cuo/platform/admob/AdmobFunNames" mod="1389963044000" signatureChecksum="3877014772" >
+        <def id="so.cuo.platform.admob:AdmobFunNames" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="_6b20cf9a7b8c2de1103843f6c5efdafd4df8f4af36a4c4008f8a85ef6d9bc108_flash_display_Sprite" mod="1390030503793" signatureChecksum="785546463" >
+        <def id="_6b20cf9a7b8c2de1103843f6c5efdafd4df8f4af36a4c4008f8a85ef6d9bc108_flash_display_Sprite" /> 
+        <dep id="flash.system:Security" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:Sprite" type="i" /> 
+      </script>
+      <script name="so/cuo/platform/admob/AdmobEvent" mod="1389962772000" signatureChecksum="3249530177" >
+        <def id="so.cuo.platform.admob:AdmobEvent" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.events:Event" type="i" /> 
+      </script>
+      <script name="so/cuo/platform/admob/AdmobSize" mod="1386810884000" signatureChecksum="3375128021" >
+        <def id="so.cuo.platform.admob:AdmobSize" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="so/cuo/platform/admob/AdmobPosition" mod="1386810878000" signatureChecksum="3681319345" >
+        <def id="so.cuo.platform.admob:AdmobPosition" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="so/cuo/platform/admob/Admob" mod="1390030504000" signatureChecksum="3118123931" >
+        <def id="so.cuo.platform.admob:Admob" /> 
+        <dep id="so.cuo.platform.admob:AdmobFunNames" type="e" /> 
+        <dep id="trace" type="e" /> 
+        <dep id="flash.system:Capabilities" type="e" /> 
+        <dep id="flash.events:StatusEvent" type="e" /> 
+        <dep id="so.cuo.platform.admob:AdmobEvent" type="e" /> 
+        <dep id="flash.external:ExtensionContext" type="e" /> 
+        <dep id="so.cuo.platform.admob:AdmobSize" type="e" /> 
+        <dep id="flash.events:StatusEvent" type="s" /> 
+        <dep id="flash.external:ExtensionContext" type="s" /> 
+        <dep id="so.cuo.platform.admob:AdmobSize" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.events:EventDispatcher" type="i" /> 
+      </script>
+      <digests>
+        <digest type="SHA-256" signed="false" value="deb6d32278587c92f38ebaa24e8c42f2b127a1568579ce03d5db1d9d2e77609c"   />
+      </digests>
+    </library>
+  </libraries>
+  <files>
+  </files>
+</swc>

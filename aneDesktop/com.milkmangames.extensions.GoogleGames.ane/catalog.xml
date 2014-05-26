@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding ="utf-8"?>
+<swc xmlns="http://www.adobe.com/flash/swccatalog/9">
+  <versions>
+    <swc version="1.2" />
+    <flex version="4.6.0" build="23201" minimumSupportedVersion="3.0.0" />
+  </versions>
+  <features>
+    <feature-script-deps />
+    <feature-files />
+  </features>
+  <libraries>
+    <library path="library.swf">
+      <script name="_321cc9c6a94a5781e1be28ee118781ba3e623e41508f9cbe005e7851f1bf85b5_flash_display_Sprite" mod="1396852404805" signatureChecksum="1263172149" >
+        <def id="_321cc9c6a94a5781e1be28ee118781ba3e623e41508f9cbe005e7851f1bf85b5_flash_display_Sprite" /> 
+        <dep id="flash.system:Security" type="e" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.display:Sprite" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/events/GoogleGamesEvent" mod="1396849955269" signatureChecksum="4067890331" >
+        <def id="com.milkmangames.nativeextensions.events:GoogleGamesEvent" /> 
+        <dep id="com.milkmangames.nativeextensions:GPGLeaderboard" type="s" /> 
+        <dep id="com.milkmangames.nativeextensions:GPGScore" type="s" /> 
+        <dep id="__AS3__.vec:Vector" type="s" /> 
+        <dep id="com.milkmangames.nativeextensions:GPGAchievement" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.events:Event" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/GPGAchievementType" mod="1369691361335" signatureChecksum="1238315988" >
+        <def id="com.milkmangames.nativeextensions:GPGAchievementType" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/GPGLeaderboard" mod="1369691148111" signatureChecksum="453263150" >
+        <def id="com.milkmangames.nativeextensions:GPGLeaderboard" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/GPGScore" mod="1369690914882" signatureChecksum="1546214383" >
+        <def id="com.milkmangames.nativeextensions:GPGScore" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/GPGAchievement" mod="1369691546053" signatureChecksum="3464849253" >
+        <def id="com.milkmangames.nativeextensions:GPGAchievement" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/GPGScoreOrder" mod="1369691129439" signatureChecksum="298268235" >
+        <def id="com.milkmangames.nativeextensions:GPGScoreOrder" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/GPGTimeSpan" mod="1369689682786" signatureChecksum="879573134" >
+        <def id="com.milkmangames.nativeextensions:GPGTimeSpan" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/GPGAchievementState" mod="1369691297279" signatureChecksum="3733208181" >
+        <def id="com.milkmangames.nativeextensions:GPGAchievementState" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="Object" type="i" /> 
+      </script>
+      <script name="com/milkmangames/nativeextensions/GoogleGames" mod="1396849996856" signatureChecksum="2246274711" >
+        <def id="com.milkmangames.nativeextensions:GoogleGames" /> 
+        <dep id="com.milkmangames.nativeextensions:GPGLeaderboard" type="e" /> 
+        <dep id="com.milkmangames.nativeextensions:GPGScore" type="e" /> 
+        <dep id="ArgumentError" type="e" /> 
+        <dep id="Date" type="e" /> 
+        <dep id="com.milkmangames.nativeextensions:GPGTimeSpan" type="e" /> 
+        <dep id="__AS3__.vec:Vector" type="e" /> 
+        <dep id="flash.events:StatusEvent" type="e" /> 
+        <dep id="flash.utils:getDefinitionByName" type="e" /> 
+        <dep id="flash.external:ExtensionContext" type="e" /> 
+        <dep id="com.milkmangames.nativeextensions:GPGAchievement" type="e" /> 
+        <dep id="com.milkmangames.nativeextensions.events:GoogleGamesEvent" type="e" /> 
+        <dep id="Error" type="e" /> 
+        <dep id="com.milkmangames.nativeextensions:GPGLeaderboard" type="s" /> 
+        <dep id="com.milkmangames.nativeextensions:GPGScore" type="s" /> 
+        <dep id="Date" type="s" /> 
+        <dep id="com.milkmangames.nativeextensions:GPGTimeSpan" type="s" /> 
+        <dep id="flash.events:StatusEvent" type="s" /> 
+        <dep id="flash.external:ExtensionContext" type="s" /> 
+        <dep id="com.milkmangames.nativeextensions:GPGAchievement" type="s" /> 
+        <dep id="com.milkmangames.nativeextensions.events:GoogleGamesEvent" type="s" /> 
+        <dep id="Error" type="s" /> 
+        <dep id="AS3" type="n" /> 
+        <dep id="flash.events:EventDispatcher" type="i" /> 
+      </script>
+      <digests>
+        <digest type="SHA-256" signed="false" value="cc142d5dff3562a42c99523e180016b92dd22c777a14111c41fb673cd9385e7c"   />
+      </digests>
+    </library>
+  </libraries>
+  <files>
+  </files>
+</swc>
