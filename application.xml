@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <application xmlns="http://ns.adobe.com/air/application/4.0">
-	<id>bar.Oduncu</id>
-	<versionNumber>1.0.8</versionNumber>
+	<id>air.com.barisdemirdelen.OduncuTycoon</id>
+	<versionNumber>2.0.0</versionNumber>
 	<supportedProfiles>mobileDevice</supportedProfiles>
-	<filename>Oduncu</filename>
-	<name>Oduncu</name>
+	<filename>Oduncu Tycoon</filename>
+	<name>Oduncu Tycoon</name>
 	<android>
 		<manifestAdditions>
 			<![CDATA[<manifest android:installLocation="auto">
@@ -14,7 +14,7 @@
 	<uses-feature android:required="true" android:name="android.hardware.touchscreen.multitouch" />
 	
 	<application>
-		<meta-data android:name="com.google.android.gms.games.APP_ID" android:value="\ 197597686426" />
+		<meta-data android:name="com.google.android.gms.games.APP_ID" android:value="\ 506207788884" />
 		<activity android:name="com.freshplanet.googleplaygames.SignInActivity" android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity android:name="com.google.ads.AdActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"/>
 	</application>
@@ -42,8 +42,8 @@
 		<requestedDisplayResolution>high</requestedDisplayResolution>
 	</iPhone>
 	<initialWindow>
-		<title>Oduncu</title>
-		<content>Oduncu.swf</content>
+		<title>Oduncu Tycoon</title>
+		<content>OduncuTycoon.swf</content>
 		<visible>true</visible>
 		<fullScreen>true</fullScreen>
 		<autoOrients>true</autoOrients>

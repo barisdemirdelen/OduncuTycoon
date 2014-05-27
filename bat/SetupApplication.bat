@@ -7,7 +7,7 @@
 :: NOTICE: all paths are relative to project root
 
 :: Android packaging
-set AND_CERT_NAME="Oduncu"
+set AND_CERT_NAME="OduncuTycoon"
 set AND_CERT_PASS=barbar2B
 set AND_CERT_FILE=cert\android.p12
 set AND_ICONS=icons/android
@@ -18,8 +18,8 @@ set AND_SIGNING_OPTIONS=-storetype pkcs12 -keystore "%AND_CERT_FILE%" -storepass
 set IOS_DIST_CERT_FILE=cert\ios_distribution.p12
 set IOS_DEV_CERT_FILE=cert\ios_development.p12
 set IOS_DEV_CERT_PASS=barbar2B
-set IOS_PROVISION=cert\Oduncu.mobileprovision
-::set IOS_PROVISION=cert\OduncuDist.mobileprovision
+set IOS_PROVISION=cert\OduncuTycoon.mobileprovision
+::set IOS_PROVISION=cert\OduncuTycoonDist.mobileprovision
 set IOS_ICONS=icons/ios
 
 set IOS_DEV_SIGNING_OPTIONS=-storetype pkcs12 -keystore "%IOS_DEV_CERT_FILE%" -storepass %IOS_DEV_CERT_PASS% -provisioning-profile %IOS_PROVISION%
@@ -33,14 +33,14 @@ set APP_DIR=bin
 set FILE_OR_DIR=-C %APP_DIR% .
 
 :: Your application ID (must match <id> of Application descriptor)
-set APP_ID=bar.Oduncu
+set APP_ID=air.com.barisdemirdelen.OduncuTycoon
 
 :: Output packages
 set DIST_PATH=dist
-set DIST_NAME=Oduncu
+set DIST_NAME=OduncuTycoon
 
 :: Debugging using a custom IP
-set DEBUG_IP=192.168.1.71
+set DEBUG_IP=192.168.1.20
 
 
 
