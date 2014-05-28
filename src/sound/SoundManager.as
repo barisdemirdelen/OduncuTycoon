@@ -73,9 +73,11 @@
 		}
 
 		public function playTestereHitSound(): void {
-			testereHitSound.stopPlaying();
+			//testereHitSound.stopPlaying();
+			if(!testereHitSound.isPlaying()) {
 			testereHitSound.startPlaying();
 			setMuted(isMuted());
+			}
 		}
 
 		public function playAgacWalkSound(): void {

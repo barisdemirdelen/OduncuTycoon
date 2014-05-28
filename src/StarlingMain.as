@@ -10,7 +10,6 @@ package {
 		public function StarlingMain() {
 			Main.onStarlingReady();
 		}
-	
 	}
 
 }

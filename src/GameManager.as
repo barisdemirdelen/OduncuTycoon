@@ -1,5 +1,4 @@
 package {
-	import aze.motion.easing.Linear;
 	import aze.motion.eaze;
 	import flash.display.SimpleButton;
 	import flash.events.AccelerometerEvent;
@@ -11,16 +10,19 @@ package {
 	import flash.text.TextFormat;
 	import flash.utils.getTimer;
 	import flash.utils.Timer;
+	import model.Adam;
+	import model.Boss;
+	import model.Tree;
 	import so.cuo.platform.admob.Admob;
 	import so.cuo.platform.admob.AdmobEvent;
 	import so.cuo.platform.admob.AdmobPosition;
 	import sound.SoundManager;
 	import starling.core.Starling;
 	import starling.display.Button;
-	import starling.display.MovieClip;
 	import starling.display.Quad;
 	import starling.display.Sprite;
 	import starling.display.Stage;
+	import starling.events.EnterFrameEvent;
 	import starling.events.Touch;
 	import starling.events.TouchEvent;
 	import starling.events.TouchPhase;
@@ -34,8 +36,6 @@ package {
 	public class GameManager extends BurgerManager {
 		
 		private var _gameScene:Sprite;
-		private var _adam:MovieClip;
-		private var _adamPatlama:MovieClip;
 		
 		private var _gameTimer:Timer;
 		private var _finishTimer:Timer
@@ -48,7 +48,7 @@ package {
 		private var _gameWidth:Number;
 		
 		private var _boss:Tree;
-		private var _dead:Boolean;
+		private var _adam:Adam;
 		
 		private var _scoreField:TextField;
 		private var _score:Number;
@@ -71,15 +71,10 @@ package {
 		private var _stage:Stage;
 		private var _treeLayer:Sprite;
 		private var _bossLayer:Sprite;
+		private var _adamLayer:Sprite;
 		
 		private const _adamOffset:Number = 5;
 		private var _backgroundSprite:Sprite;
-		
-		private const ADAM_PATLAMA:Rectangle = new Rectangle(-319, -30, 551, -148);
-		private const ADAM_HITBOX:Rectangle = new Rectangle(28, 10, 29, 87);
-		private const SAW_HITBOX:Rectangle = new Rectangle(57, 53, 38, 20);
-		private const TREE_HITBOX:Rectangle = new Rectangle(65, 28, 42, 276);
-		private const BOSS_HITBOX:Rectangle = new Rectangle(11, 149, 532, 400);
 		
 		private var _killedTreeCount:int;
 		private var _lastKillCount:int;
@@ -105,14 +100,12 @@ package {
 			_instance = this;
 			FlashStageHelper.stage.frameRate = 60;
 			_stage = Starling.current.stage;
-			_treeSpeed = 30;
+			_treeSpeed = 0.95;
 			_score = 0;
 			_lastScore = 0;
-			_dead = false;
 			_boss = null;
 			_bossCreationRatio = 0.05;
 			_treeCreationRatio = 0.025;
-			_adamSpeed = 0;
 			_killedTreeCount = 0;
 			_lastKillCount = 0;
 			_paused = false;
@@ -131,14 +124,13 @@ package {
 			_treeLayer = new Sprite();
 			_gameScene.addChild(_treeLayer);
 			
-			_adam = Assets.getMovieClip("sagadogru");
-			_adamPatlama = Assets.getMovieClip("adamSprite");
-			_adamPatlama.loop = false;
-			_adamPatlama.stop();
+			_adamLayer = new Sprite();
+			_gameScene.addChild(_adamLayer);
+			_adam = new Adam();
 			
-			_adam.y = _stage.stageHeight - _adam.height + 5;
-			_adam.x = _stage.stageWidth / 2 - _adam.width / 2;
-			_gameScene.addChild(_adam);
+			_adam.y = _stage.stageHeight - _adam.clip.height + 5;
+			_adam.x = _stage.stageWidth / 2 - _adam.clip.width / 2;
+			_adamLayer.addChild(_adam.clip);
 			_gameScene.addChild(Assets.getMovieClip("cimenler"));
 			
 			_admob = Admob.getInstance(); //create a instance
@@ -154,24 +146,6 @@ package {
 			_admob.enableTrace = Capabilities.isDebugger;
 			_admob.showBanner(Admob.SMART_BANNER, AdmobPosition.TOP_RIGHT);
 			
-			//if(!_banner) {
-			//if (Capabilities.manufacturer.toLowerCase().indexOf("ios") != -1) {
-			////ios
-			//_banner = new MoPubBanner("3267561bf1e24a9ba7faf0272a1f6e32", MoPubSize.banner);
-			//} else {
-			//_banner = new MoPubBanner("84c56954f79242e9aa1cf146a5a1a5b5", MoPubSize.banner);
-			//}
-			//
-			//if(_banner) {
-			//_banner.y = 0;
-			//_banner.x = Starling.current.nativeStage.width - 320;
-			//_banner.width = 320;
-			//_banner.height = 50;
-			//_banner.load();
-			//_banner.show();
-			//}
-			//}
-			
 			_trees = new Array();
 			SoundManager.instance.playTestereCleanSound();
 			_gameScene.addEventListener(TouchEvent.TOUCH, onClick);
@@ -181,49 +155,90 @@ package {
 			_scoreField.hAlign = HAlign.LEFT;
 			_gameScene.addChild(_scoreField);
 			_startTime = getTimer();
-			//
-			//_accelerometer = new Accelerometer();
-			//if (Accelerometer.isSupported) {
-			////_accelerometer.addEventListener(AccelerometerEvent.UPDATE, onAccelerometerUpdate);
-			//}
-			//
+			
 			_gameTimer = new Timer(50);
 			_gameTimer.addEventListener(TimerEvent.TIMER, onTick);
 			_gameTimer.start();
+			
+			Starling.current.stage.addEventListener(EnterFrameEvent.ENTER_FRAME, onFrame);
 			
 			_massacreTimer = new Timer(1000);
 			_massacreTimer.addEventListener(TimerEvent.TIMER, onMassacreTimer);
 			_massacreTimer.start();
 		}
 		
-		private function onAdFailed(e:AdmobEvent):void {
-			trace(e.data);
-		}
-		
-		private function onAdReceived(e:AdmobEvent):void {
-			trace(e.data.width, e.data.height);
-		}
-		
-		private function onAccelerometerUpdate(e:AccelerometerEvent):void {
-			trace(e.accelerationX);
-			_adamSpeed -= e.accelerationX;
-		}
-		
-		private function onMassacreTimer(e:TimerEvent):void {
-			if (_killedTreeCount >= _lastKillCount + 10) {
-				GameCenterManager.instance.unlockAchievement("kill10Sec1");
+		private function onFrame(e:EnterFrameEvent):void {
+			if (_adam.dead || _paused) {
+				return;
 			}
-			_lastKillCount = _killedTreeCount;
+			
+			var adamHitBounds:Rectangle = _adam.getHitBounds(_gameScene);
+			var sawHitBounds:Rectangle = _adam.getSawHitBounds(_gameScene);
+			
+			for each (var tree:Tree in _trees) {
+				if (tree.dying) {
+					continue;
+				}
+				var treeHitBounds:Rectangle = tree.getHitBounds(_gameScene);
+				if (sawHitBounds.intersects(treeHitBounds)) {
+					//tree.dying = true;
+					//if (tree.isBoss) {
+					//eaze(tree.clip).to(4, {y: _stage.stageHeight}).onComplete(onTreeDead, tree);
+					//} else {
+					//if (tree.facingRight) {
+					//eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x - tree.clip.height, rotation: -Math.PI / 2}).onComplete(onTreeDead, tree);
+					//} else {
+					//eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x + tree.clip.height, rotation: Math.PI / 2}).onComplete(onTreeDead, tree);
+					//}
+					//}
+					//var y:Number = _stage.stageHeight - 20 * Math.random();
+					//var x:Number = _stage.stageWidth / 2 - Math.random() * 5;
+					//if (_adam.scaleX > 0) {
+					//x = _stage.stageWidth / 2 + Math.random() * 10;
+					//}
+					//var hitScoreText:TextField = createTextField(String(Math.floor(Math.random() * 9002)));
+					//hitScoreText.x = x;
+					//hitScoreText.y = y;
+					//_gameScene.addChild(hitScoreText);
+					//eaze(hitScoreText).to(2, {y: -hitScoreText.height}).onComplete(onHitScoreFinished, hitScoreText);
+					//
+					//var randomDarbe:String = _darbeArray[Math.floor(Math.random() * _darbeArray.length)];
+					//var localizedDarbe:String = LocaleUtil.localize(randomDarbe) + " " + LocaleUtil.localize("blow") + "!";
+					//var darbeText:TextField = createTextField(localizedDarbe);
+					//y = _stage.stageHeight - 20 * Math.random();
+					//x = _stage.stageWidth / 2 + Math.random() * 5;
+					//if (_adam.scaleX > 0) {
+					//x = _stage.stageWidth / 2 - Math.random() * 10;
+					//}
+					//darbeText.x = x;
+					//darbeText.y = y;
+					//_gameScene.addChild(darbeText);
+					//eaze(darbeText).to(2.5, {y: -darbeText.height}).onComplete(onHitScoreFinished, darbeText);
+					SoundManager.instance.playTestereHitSound();
+				} else if (adamHitBounds.intersects(treeHitBounds)) {
+					
+						//killAdam();
+						//break;
+				} else {
+					tree.x += tree.speed;
+				}
+			}
+			if (_adam.dead) {
+				for each (tree in _trees) {
+					tree.killTweens();
+				}
+				return;
+			}
 		}
 		
 		private function onTick(e:TimerEvent):void {
-			if (_dead) {
-				for each (var tree2:Tree in _trees) {
-					tree2.clip.scaleX *= -1;
-					if (tree2.clip.scaleX < 0) {
-						tree2.clip.x += tree2.clip.width
+			if (_adam.dead) {
+				for each (var tree:Tree in _trees) {
+					tree.clip.scaleX *= -1;
+					if (tree.clip.scaleX < 0) {
+						tree.clip.x += tree.clip.width
 					} else {
-						tree2.clip.x -= tree2.clip.width
+						tree.clip.x -= tree.clip.width
 					}
 				}
 				return;
@@ -241,127 +256,31 @@ package {
 			
 			checkAchievements();
 			
-			_treeSpeed *= 1499 / 1500;
+			_treeSpeed *= 1500 / 1499;
 			_treeCreationRatio *= 1500 / 1499;
-			//
 			if (_treeCreationRatio >= Math.random()) {
-				if (!_boss && _bossCreationRatio >= Math.random()) {
-					newTree = new Tree(true);
-					_boss = newTree;
-					_backgroundSprite.removeChildren();
-					_backgroundSprite.addChild(Assets.getMovieClip("bossarkaplan"));
-					SoundManager.instance.playBossSound();
-					_bossLayer.addChild(newTree.clip);
-				} else {
-					var newTree:Tree = new Tree(false);
-					_treeLayer.addChild(newTree.clip);
-				}
-				if (!SoundManager.instance.isAgacPlaying()) {
-					SoundManager.instance.playAgacWalkSound();
-				}
+				var newTree:Tree = new Tree();
+				_treeLayer.addChild(newTree.clip);
 				
-				newTree.clip.y = _stage.stageHeight - newTree.clip.height
+				newTree.y = _stage.stageHeight - newTree.clip.height;
 				var left:Boolean = Math.random() < 0.5;
-				if (left || newTree.isBoss) {
+				if (left || newTree is Boss) {
 					newTree.facingRight = false;
-					newTree.clip.x = _stage.stageWidth;
-					//
-					eaze(newTree.clip).easing(Linear.easeNone).to(_treeSpeed, {x: -newTree.clip.width}).onComplete(onTreeDead, newTree);
+					newTree.x = _stage.stageWidth;
+					newTree.speed = -_treeSpeed;
 					_trees.push(newTree);
 				} else {
 					newTree.facingRight = true;
 					GraphicsUtil.reverseHorizontal(newTree.clip);
-					newTree.clip.x -= 2 * newTree.clip.width;
-					
-					eaze(newTree.clip).easing(Linear.easeNone).to(_treeSpeed, {x: _stage.stageWidth}).onComplete(onTreeDead, newTree);
+					newTree.x -= 2 * newTree.clip.width;
+					newTree.speed = _treeSpeed;
 					_trees.push(newTree);
 				}
-			}
-			//
-			
-			var adamBounds:Rectangle = _adam.getBounds(_gameScene);
-			var adamHitBounds:Rectangle = ADAM_HITBOX.clone();
-			var sawHitBounds:Rectangle = SAW_HITBOX.clone();
-			if (_adam.scaleX < 0) {
-				adamHitBounds.offset(ADAM_HITBOX.width - ADAM_HITBOX.x / 2, 0);
-				sawHitBounds.offset(-ADAM_HITBOX.width - SAW_HITBOX.x / 2 + 5, 0);
-			}
-			adamHitBounds.offset(adamBounds.x, adamBounds.y);
-			sawHitBounds.offset(adamBounds.x, adamBounds.y);
-			
-			for each (var tree:Tree in _trees) {
-				if (tree.dying) {
-					continue;
-				}
-				
-				var treeBounds:Rectangle = tree.clip.getBounds(_gameScene);
-				var treeHitBounds:Rectangle = tree.isBoss ? BOSS_HITBOX.clone() : TREE_HITBOX.clone();
-				if (tree.clip.scaleX < 0) {
-					treeHitBounds.offset(tree.isBoss ? BOSS_HITBOX.width - BOSS_HITBOX.x : TREE_HITBOX.width - TREE_HITBOX.x, 0);
-				}
-				treeHitBounds.offset(treeBounds.x, treeBounds.y);
-				
-				if (sawHitBounds.intersects(treeHitBounds)) {
-					tree.dying = true;
-					if (tree.isBoss) {
-						eaze(tree.clip).to(4, {y: _stage.stageHeight}).onComplete(onTreeDead, tree);
-					} else {
-						if (tree.facingRight) {
-							eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x - tree.clip.height, rotation: -Math.PI / 2}).onComplete(onTreeDead, tree);
-						} else {
-							eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x + tree.clip.height, rotation: Math.PI / 2}).onComplete(onTreeDead, tree);
-						}
-					}
-					var y:Number = _stage.stageHeight - 20 * Math.random();
-					var x:Number = _stage.stageWidth / 2 - Math.random() * 5;
-					if (_adam.scaleX > 0) {
-						x = _stage.stageWidth / 2 + Math.random() * 10;
-					}
-					var hitScoreText:TextField = createTextField(String(Math.floor(Math.random() * 9002)));
-					hitScoreText.x = x;
-					hitScoreText.y = y;
-					_gameScene.addChild(hitScoreText);
-					eaze(hitScoreText).to(2, {y: -hitScoreText.height}).onComplete(onHitScoreFinished, hitScoreText);
-					
-					var randomDarbe:String = _darbeArray[Math.floor(Math.random() * _darbeArray.length)];
-					var localizedDarbe:String = LocaleUtil.localize(randomDarbe) + " " + LocaleUtil.localize("blow") + "!";
-					var darbeText:TextField = createTextField(localizedDarbe);
-					y = _stage.stageHeight - 20 * Math.random();
-					x = _stage.stageWidth / 2 + Math.random() * 5;
-					if (_adam.scaleX > 0) {
-						x = _stage.stageWidth / 2 - Math.random() * 10;
-					}
-					darbeText.x = x;
-					darbeText.y = y;
-					_gameScene.addChild(darbeText);
-					eaze(darbeText).to(2.5, {y: -darbeText.height}).onComplete(onHitScoreFinished, darbeText);
-					SoundManager.instance.playTestereHitSound();
-				}
-				
-				if (adamHitBounds.intersects(treeHitBounds)) {
-					killAdam();
-					break;
-				}
-			}
-			if (_dead) {
-				for each (tree in _trees) {
-					eaze(tree.clip).killTweens();
-				}
-				return;
 			}
 		}
 		
 		public function killAdam():void {
-			_gameScene.removeChild(_adam);
-			_gameScene.addChild(_adamPatlama);
-			_adamPatlama.y = 80;
-			_adamPatlama.play();
-			
-			if (_adam.scaleX < 0) {
-				GraphicsUtil.reverseHorizontal(_adamPatlama);
-			}
-			
-			_dead = true;
+			_adam.die();
 			SoundManager.instance.stopAgacWalkSound();
 			SoundManager.instance.stopBossSound();
 			_finishTimer = new Timer(3000, 1);
@@ -369,7 +288,7 @@ package {
 			_finishTimer.start();
 			
 			for each (var tree:Tree in _trees) {
-				eaze(tree.clip).killTweens();
+				tree.killTweens();
 			}
 			
 			if (_killedTreeCount == 0) {
@@ -454,7 +373,7 @@ package {
 		}
 		
 		private function onClick(e:TouchEvent):void {
-			if (_dead) {
+			if (_adam.dead) {
 				return;
 			}
 			
@@ -464,12 +383,12 @@ package {
 				return;
 			}
 			if (touch.globalX >= _stage.stageWidth / 2) {
-				if (_adam.scaleX < 0) {
-					GraphicsUtil.reverseHorizontal(_adam);
+				if (_adam.clip.scaleX < 0) {
+					GraphicsUtil.reverseHorizontal(_adam.clip);
 				}
 			} else {
-				if (_adam.scaleX > 0) {
-					GraphicsUtil.reverseHorizontal(_adam);
+				if (_adam.clip.scaleX > 0) {
+					GraphicsUtil.reverseHorizontal(_adam.clip);
 				}
 			}
 		}
@@ -512,6 +431,26 @@ package {
 			_instance = null;
 			
 			super.destroy(e);
+		}
+		
+		private function onAdFailed(e:AdmobEvent):void {
+			trace(e.data);
+		}
+		
+		private function onAdReceived(e:AdmobEvent):void {
+			trace(e.data.width, e.data.height);
+		}
+		
+		private function onAccelerometerUpdate(e:AccelerometerEvent):void {
+			trace(e.accelerationX);
+			_adamSpeed -= e.accelerationX;
+		}
+		
+		private function onMassacreTimer(e:TimerEvent):void {
+			if (_killedTreeCount >= _lastKillCount + 10) {
+				GameCenterManager.instance.unlockAchievement("kill10Sec1");
+			}
+			_lastKillCount = _killedTreeCount;
 		}
 		
 		public static function get instance():GameManager {
