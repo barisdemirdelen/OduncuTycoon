@@ -1,4 +1,5 @@
 package model {
+	import aze.motion.eaze;
 	import flash.geom.Rectangle;
 	import model.Creature;
 	import sound.SoundManager;
@@ -46,6 +47,28 @@ package model {
 			
 			if (!SoundManager.instance.isAgacPlaying()) {
 				SoundManager.instance.playAgacWalkSound();
+			}
+		}
+		
+		override public function die():void {
+			super.die();
+			if (_clip) {
+				if (_facingRight) {
+					eaze(_clip).to(2.5, {y: Starling.current.stage.stageHeight + _clip.height, x: _x - _clip.height, rotation: -Math.PI / 2}).onComplete(destroy);
+				} else {
+					eaze(_clip).to(2.5, {y: Starling.current.stage.stageHeight + _clip.height, x: _x + _clip.height, rotation: Math.PI / 2}).onComplete(destroy);
+				}
+			} else {
+				destroy();
+			}
+		}
+		
+		public function deathDance():void {
+			_clip.scaleX *= -1;
+			if (_clip.scaleX < 0) {
+				_clip.x += _clip.width
+			} else {
+				_clip.x -= _clip.width
 			}
 		}
 		

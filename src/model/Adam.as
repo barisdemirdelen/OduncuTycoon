@@ -1,5 +1,7 @@
 package model {
+	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
+	import sound.SoundManager;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.MovieClip;
 	
@@ -20,6 +22,15 @@ package model {
 			_explodeClip = Assets.getMovieClip("adamSprite");
 			_explodeClip.loop = false;
 			_explodeClip.stop();
+			_facingRight = true;
+			_health = 100;
+		}
+		
+		override protected function onHit(e:TimerEvent = null):void {
+			super.onHit(e);
+			if(_hitTargets.length > 0) {
+				SoundManager.instance.playTestereHitSound();
+			}
 		}
 		
 		override public function die():void {
@@ -27,7 +38,7 @@ package model {
 			
 			var parent:DisplayObjectContainer = _clip.parent;
 			_clip.removeFromParent(true);
-			parent.addChild(_explodeClip);
+			//parent.addChild(_explodeClip);
 			_explodeClip.y = 80;
 			_explodeClip.play();
 			
@@ -56,6 +67,11 @@ package model {
 			return sawHitBounds;
 		}
 		
+		public function changeDirection():void {
+			GraphicsUtil.reverseHorizontal(_clip);
+			_facingRight = !_facingRight;
+		}
+		
 		public function get explodeClip():MovieClip {
 			return _explodeClip;
 		}
@@ -63,7 +79,7 @@ package model {
 		public function set explodeClip(value:MovieClip):void {
 			_explodeClip = value;
 		}
-	
+		
 	}
 
 }

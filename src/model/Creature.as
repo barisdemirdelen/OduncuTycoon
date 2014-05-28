@@ -1,6 +1,11 @@
 package model {
 	import aze.motion.eaze;
+	import events.CreatureEvent;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
+	import flash.utils.Timer;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.MovieClip;
 	
@@ -8,12 +13,12 @@ package model {
 	 * ...
 	 * @author Barış Demirdelen
 	 */
-	public class Creature {
+	public class Creature extends EventDispatcher {
 		
 		protected var _clip:MovieClip = null;
-		protected var _health:Number = 0;
-		protected var _attackDamage:Number = 0;
-		protected var _attackSpeed:Number = 0;
+		protected var _health:Number = 3;
+		protected var _attackDamage:Number = 1;
+		protected var _attackSpeed:Number = 1;
 		protected var _armor:Number = 0;
 		protected var _dying:Boolean = false;
 		protected var _dead:Boolean = false;
@@ -23,11 +28,61 @@ package model {
 		protected var _x:Number = 0;
 		protected var _y:Number = 0;
 		
+		protected var _lastTakenDamage:Number;
+		
+		protected var _hitTimer:Timer;
+		protected var _hitTargets:Array;
+		
 		public function Creature() {
+			_hitTargets = new Array();
+		}
+		
+		public function startHitting():void {
+			if (isHitting()) {
+				return;
+			}
+			_hitTimer = new Timer(1000 / _attackSpeed);
+			_hitTimer.addEventListener(TimerEvent.TIMER, onHit);
+			_hitTimer.start();
+		}
+		
+		public function stopHitting():void {
+			if (_hitTimer) {
+				_hitTimer.removeEventListener(TimerEvent.TIMER, onHit);
+				_hitTimer = null;
+			}
+		}
+		
+		public function isHitting():Boolean {
+			return _hitTimer != null;
+		}
+		
+		protected function onHit(e:TimerEvent = null):void {
+			for each (var creature:Creature in _hitTargets) {
+				creature.takeDamage(_attackDamage);
+			}
+		}
+		
+		public function addHitTarget(creature:Creature):void {
+			if(_hitTargets.indexOf(creature) <0) {
+				_hitTargets.push(creature);
+			}
+		}
+		
+		public function removeHitTarget(creature:Creature):void {
+			if(_hitTargets.indexOf(creature) >=0) {
+				_hitTargets.splice(_hitTargets.indexOf(creature), 1);
+			}
+		}
+		
+		public function removeAllHitTargets():void {
+			_hitTargets = new Array();
 		}
 		
 		public function takeDamage(damage:Number):void {
 			_health = _health - damage;
+			_lastTakenDamage = damage;
+			dispatchEvent(new CreatureEvent(CreatureEvent.CREATURE_TOOK_DAMAGE, this));
 			if (_health <= 0) {
 				die();
 			}
@@ -35,14 +90,18 @@ package model {
 		
 		public function die():void {
 			_dying = true;
+			stopHitting();
+			dispatchEvent(new CreatureEvent(CreatureEvent.CREATURE_DYING, this));
 		}
 		
-		public function destroy():void {
+		public function destroy(e:Event = null):void {
+			stopHitting();
 			if (_clip) {
 				killTweens();
 				_clip.removeFromParent(true);
 				_clip = null
 			}
+			dispatchEvent(new CreatureEvent(CreatureEvent.CREATURE_DEAD, this));
 		}
 		
 		public function getHitBounds(scene:DisplayObjectContainer, hitbox:Rectangle = null):Rectangle {
@@ -156,6 +215,10 @@ package model {
 		
 		public function set clip(value:MovieClip):void {
 			_clip = value;
+		}
+		
+		public function get lastTakenDamage():Number {
+			return _lastTakenDamage;
 		}
 	
 	}

@@ -1,5 +1,6 @@
 package {
 	import aze.motion.eaze;
+	import events.CreatureEvent;
 	import flash.display.SimpleButton;
 	import flash.events.AccelerometerEvent;
 	import flash.events.Event;
@@ -181,42 +182,45 @@ package {
 				}
 				var treeHitBounds:Rectangle = tree.getHitBounds(_gameScene);
 				if (sawHitBounds.intersects(treeHitBounds)) {
-					//tree.dying = true;
-					//if (tree.isBoss) {
-					//eaze(tree.clip).to(4, {y: _stage.stageHeight}).onComplete(onTreeDead, tree);
-					//} else {
-					//if (tree.facingRight) {
-					//eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x - tree.clip.height, rotation: -Math.PI / 2}).onComplete(onTreeDead, tree);
-					//} else {
-					//eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x + tree.clip.height, rotation: Math.PI / 2}).onComplete(onTreeDead, tree);
-					//}
-					//}
-					//var y:Number = _stage.stageHeight - 20 * Math.random();
-					//var x:Number = _stage.stageWidth / 2 - Math.random() * 5;
-					//if (_adam.scaleX > 0) {
-					//x = _stage.stageWidth / 2 + Math.random() * 10;
-					//}
-					//var hitScoreText:TextField = createTextField(String(Math.floor(Math.random() * 9002)));
-					//hitScoreText.x = x;
-					//hitScoreText.y = y;
-					//_gameScene.addChild(hitScoreText);
-					//eaze(hitScoreText).to(2, {y: -hitScoreText.height}).onComplete(onHitScoreFinished, hitScoreText);
-					//
-					//var randomDarbe:String = _darbeArray[Math.floor(Math.random() * _darbeArray.length)];
-					//var localizedDarbe:String = LocaleUtil.localize(randomDarbe) + " " + LocaleUtil.localize("blow") + "!";
-					//var darbeText:TextField = createTextField(localizedDarbe);
-					//y = _stage.stageHeight - 20 * Math.random();
-					//x = _stage.stageWidth / 2 + Math.random() * 5;
-					//if (_adam.scaleX > 0) {
-					//x = _stage.stageWidth / 2 - Math.random() * 10;
-					//}
-					//darbeText.x = x;
-					//darbeText.y = y;
-					//_gameScene.addChild(darbeText);
-					//eaze(darbeText).to(2.5, {y: -darbeText.height}).onComplete(onHitScoreFinished, darbeText);
-					SoundManager.instance.playTestereHitSound();
+					_adam.addHitTarget(tree);
+					_adam.startHitting();
+						//tree.dying = true;
+						//if (tree.isBoss) {
+						//eaze(tree.clip).to(4, {y: _stage.stageHeight}).onComplete(onTreeDead, tree);
+						//} else {
+						//if (tree.facingRight) {
+						//eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x - tree.clip.height, rotation: -Math.PI / 2}).onComplete(onTreeDead, tree);
+						//} else {
+						//eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x + tree.clip.height, rotation: Math.PI / 2}).onComplete(onTreeDead, tree);
+						//}
+						//}
+						//var y:Number = _stage.stageHeight - 20 * Math.random();
+						//var x:Number = _stage.stageWidth / 2 - Math.random() * 5;
+						//if (_adam.scaleX > 0) {
+						//x = _stage.stageWidth / 2 + Math.random() * 10;
+						//}
+						//var hitScoreText:TextField = createTextField(String(Math.floor(Math.random() * 9002)));
+						//hitScoreText.x = x;
+						//hitScoreText.y = y;
+						//_gameScene.addChild(hitScoreText);
+						//eaze(hitScoreText).to(2, {y: -hitScoreText.height}).onComplete(onHitScoreFinished, hitScoreText);
+						//
+						//var randomDarbe:String = _darbeArray[Math.floor(Math.random() * _darbeArray.length)];
+						//var localizedDarbe:String = LocaleUtil.localize(randomDarbe) + " " + LocaleUtil.localize("blow") + "!";
+						//var darbeText:TextField = createTextField(localizedDarbe);
+						//y = _stage.stageHeight - 20 * Math.random();
+						//x = _stage.stageWidth / 2 + Math.random() * 5;
+						//if (_adam.scaleX > 0) {
+						//x = _stage.stageWidth / 2 - Math.random() * 10;
+						//}
+						//darbeText.x = x;
+						//darbeText.y = y;
+						//_gameScene.addChild(darbeText);
+						//eaze(darbeText).to(2.5, {y: -darbeText.height}).onComplete(onHitScoreFinished, darbeText);
+						//SoundManager.instance.playTestereHitSound();
 				} else if (adamHitBounds.intersects(treeHitBounds)) {
-					
+					tree.startHitting();
+					tree.addHitTarget(_adam);
 						//killAdam();
 						//break;
 				} else {
@@ -234,12 +238,7 @@ package {
 		private function onTick(e:TimerEvent):void {
 			if (_adam.dead) {
 				for each (var tree:Tree in _trees) {
-					tree.clip.scaleX *= -1;
-					if (tree.clip.scaleX < 0) {
-						tree.clip.x += tree.clip.width
-					} else {
-						tree.clip.x -= tree.clip.width
-					}
+					tree.deathDance();
 				}
 				return;
 			}
@@ -254,27 +253,92 @@ package {
 			_score = int(getTimer() - _startTime);
 			_scoreField.text = LocaleUtil.localize("score") + ": " + _score;
 			
-			checkAchievements();
-			
 			_treeSpeed *= 1500 / 1499;
 			_treeCreationRatio *= 1500 / 1499;
 			if (_treeCreationRatio >= Math.random()) {
-				var newTree:Tree = new Tree();
-				_treeLayer.addChild(newTree.clip);
-				
-				newTree.y = _stage.stageHeight - newTree.clip.height;
-				var left:Boolean = Math.random() < 0.5;
-				if (left || newTree is Boss) {
-					newTree.facingRight = false;
-					newTree.x = _stage.stageWidth;
-					newTree.speed = -_treeSpeed;
-					_trees.push(newTree);
-				} else {
-					newTree.facingRight = true;
-					GraphicsUtil.reverseHorizontal(newTree.clip);
-					newTree.x -= 2 * newTree.clip.width;
-					newTree.speed = _treeSpeed;
-					_trees.push(newTree);
+				createTree();
+			}
+			
+			checkAchievements();
+		}
+		
+		private function createTree():void {
+			var newTree:Tree = new Tree();
+			_treeLayer.addChild(newTree.clip);
+			
+			newTree.y = _stage.stageHeight - newTree.clip.height;
+			var left:Boolean = Math.random() < 0.5;
+			if (left || newTree is Boss) {
+				newTree.facingRight = false;
+				newTree.x = _stage.stageWidth;
+				newTree.speed = -_treeSpeed;
+				_trees.push(newTree);
+			} else {
+				newTree.facingRight = true;
+				GraphicsUtil.reverseHorizontal(newTree.clip);
+				newTree.x -= 2 * newTree.clip.width;
+				newTree.speed = _treeSpeed;
+				_trees.push(newTree);
+			}
+			newTree.addEventListener(CreatureEvent.CREATURE_TOOK_DAMAGE, onTreeTookDamage);
+			newTree.addEventListener(CreatureEvent.CREATURE_DYING, onTreeDying);
+			newTree.addEventListener(CreatureEvent.CREATURE_DEAD, onTreeDead);
+		}
+		
+		private function onTreeDying(e:CreatureEvent):void {
+			var tree:Tree = e.creature as Tree;
+			tree.removeEventListener(CreatureEvent.CREATURE_DYING, onTreeDying);
+			tree.removeEventListener(CreatureEvent.CREATURE_TOOK_DAMAGE, onTreeTookDamage);
+			_adam.removeHitTarget(tree);
+		}
+		
+		private function onTreeDead(e:CreatureEvent):void {
+			var tree:Tree = e.creature as Tree;
+			tree.removeEventListener(CreatureEvent.CREATURE_DEAD, onTreeDead);
+			if (tree == _boss) {
+				_boss = null;
+				_backgroundSprite.removeChildren();
+				_backgroundSprite.addChild(Assets.getMovieClip("arkaplan"));
+				SoundManager.instance.stopBossSound();
+			}
+			_trees.splice(_trees.indexOf(tree), 1);
+			_killedTreeCount++;
+			
+			GameCenterManager.instance.incrementAchievement("kill10");
+			GameCenterManager.instance.incrementAchievement("kill100");
+			GameCenterManager.instance.incrementAchievement("kill1000");
+			GameCenterManager.instance.incrementAchievement("kill10000");
+		}
+		
+		private function onTreeTookDamage(e:CreatureEvent):void {
+			var tree:Tree = e.creature as Tree;
+			var textField:TextField = createTextField("-" + tree.lastTakenDamage, true);
+			textField.x = tree.x;
+			if (tree.facingRight) {
+				textField.x -= tree.clip.width;
+			}
+			textField.y = tree.y + 3 * tree.clip.height / 4;
+			eaze(textField).to(2.5, {y: -textField.height}).onComplete(onHitScoreFinished, textField);
+			_gameScene.addChild(textField);
+		}
+		
+		private function onClick(e:TouchEvent):void {
+			if (_adam.dead) {
+				return;
+			}
+			
+			var touch:Touch = e.getTouch(_gameScene, TouchPhase.BEGAN);
+			
+			if (!touch) {
+				return;
+			}
+			if (touch.globalX >= _stage.stageWidth / 2) {
+				if (_adam.clip.scaleX < 0) {
+					_adam.changeDirection();
+				}
+			} else {
+				if (_adam.clip.scaleX > 0) {
+					_adam.changeDirection();
 				}
 			}
 		}
@@ -355,45 +419,7 @@ package {
 			_gameScene.removeChild(hitScoreText);
 		}
 		
-		//
-		private function onTreeDead(tree:Tree):void {
-			if (tree == _boss) {
-				_boss = null;
-				_backgroundSprite.removeChildren();
-				_backgroundSprite.addChild(Assets.getMovieClip("arkaplan"));
-				SoundManager.instance.stopBossSound();
-			}
-			_trees.splice(_trees.indexOf(tree), 1);
-			tree.destroy();
-			_killedTreeCount++;
-			GameCenterManager.instance.incrementAchievement("kill10");
-			GameCenterManager.instance.incrementAchievement("kill100");
-			GameCenterManager.instance.incrementAchievement("kill1000");
-			GameCenterManager.instance.incrementAchievement("kill10000");
-		}
-		
-		private function onClick(e:TouchEvent):void {
-			if (_adam.dead) {
-				return;
-			}
-			
-			var touch:Touch = e.getTouch(_gameScene, TouchPhase.BEGAN);
-			
-			if (!touch) {
-				return;
-			}
-			if (touch.globalX >= _stage.stageWidth / 2) {
-				if (_adam.clip.scaleX < 0) {
-					GraphicsUtil.reverseHorizontal(_adam.clip);
-				}
-			} else {
-				if (_adam.clip.scaleX > 0) {
-					GraphicsUtil.reverseHorizontal(_adam.clip);
-				}
-			}
-		}
-		
-		private function createTextField(text:String):TextField {
+		private function createTextField(text:String, animate:Boolean = false):TextField {
 			var textField:TextField = new TextField(200, 75, text, "visitor", 24, 0xffffff);
 			return textField;
 		}
@@ -428,6 +454,8 @@ package {
 				_admob = null;
 			}
 			
+			_adam.destroy();
+			
 			_instance = null;
 			
 			super.destroy(e);
@@ -441,11 +469,6 @@ package {
 			trace(e.data.width, e.data.height);
 		}
 		
-		private function onAccelerometerUpdate(e:AccelerometerEvent):void {
-			trace(e.accelerationX);
-			_adamSpeed -= e.accelerationX;
-		}
-		
 		private function onMassacreTimer(e:TimerEvent):void {
 			if (_killedTreeCount >= _lastKillCount + 10) {
 				GameCenterManager.instance.unlockAchievement("kill10Sec1");
@@ -455,6 +478,14 @@ package {
 		
 		public static function get instance():GameManager {
 			return _instance;
+		}
+		
+		public function get paused():Boolean {
+			return _paused;
+		}
+		
+		public function set paused(value:Boolean):void {
+			_paused = value;
 		}
 	
 	}

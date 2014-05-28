@@ -66,11 +66,14 @@ package {
 		private function activate(e:Event):void {
 			_starling.start();
 			SoundManager.instance.unpauseAll();
+			if (GameManager.instance) {
+				GameManager.instance.paused = false;
+			}
 		}
 		
 		private function deactivate(e:Event):void {
 			if (GameManager.instance) {
-				GameManager.instance.killAdam();
+				GameManager.instance.paused = true;
 			}
 			SoundManager.instance.pauseAll();
 			_starling.stop(true);
