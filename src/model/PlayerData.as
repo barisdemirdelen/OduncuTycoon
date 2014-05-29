@@ -8,8 +8,11 @@ package model {
 		
 		private static var _instance:PlayerData;
 		
-		private var _sawDamage:Number;
-		private var _sawSpeed:Number;
+		private var _currentWood:Number;
+		private var _totalWood:Number;
+		
+		private var _attackDamage:Number;
+		private var _attackSpeed:Number;
 		
 		public function PlayerData() {
 			if (_instance) {
@@ -21,20 +24,36 @@ package model {
 			return _instance;
 		}
 		
-		public function get sawDamage():Number {
-			return _sawDamage;
+		public function get attackDamage():Number {
+			return _attackDamage;
 		}
 		
-		public function set sawDamage(value:Number):void {
-			_sawDamage = value;
+		public function set attackDamage(value:Number):void {
+			_attackDamage = value;
 		}
 		
-		public function get sawSpeed():Number {
-			return _sawSpeed;
+		public function get attackSpeed():Number {
+			return _attackSpeed;
 		}
 		
-		public function set sawSpeed(value:Number):void {
-			_sawSpeed = value;
+		public function set attackSpeed(value:Number):void {
+			_attackSpeed = value;
+		}
+		
+		public function get currentWood():Number {
+			return _currentWood;
+		}
+		
+		public function set currentWood(value:Number):void {
+			_currentWood = value;
+		}
+		
+		public function get totalWood():Number {
+			return _totalWood;
+		}
+		
+		public function set totalWood(value:Number):void {
+			_totalWood = value;
 		}
 	
 	}

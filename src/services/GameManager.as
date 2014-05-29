@@ -318,7 +318,7 @@ package services  {
 		
 		private function onTreeTookDamage(e:CreatureEvent):void {
 			var tree:Tree = e.creature as Tree;
-			var textField:TextField = createTextField("-" + tree.lastTakenDamage, true);
+			var textField:TextField = createTextField("-" + tree.lastTakenDamage, 0xffffff);
 			textField.x = tree.x;
 			if (tree.facingRight) {
 				textField.x -= tree.clip.width;
@@ -366,7 +366,14 @@ package services  {
 		}
 		
 		public function onAdamTookDamage(e:CreatureEvent):void {
-			
+			var textField:TextField = createTextField("-" + _adam.lastTakenDamage, 0x000000);
+			textField.x = _adam.x;
+			if (_adam.facingRight) {
+				textField.x -= _adam.clip.width;
+			}
+			textField.y = _adam.y + 3 * _adam.clip.height / 4;
+			eaze(textField).to(2.5, {y: -textField.height}).onComplete(onHitScoreFinished, textField);
+			_gameScene.addChild(textField);
 		}
 		
 		private function checkAchievements():void {
@@ -424,8 +431,8 @@ package services  {
 			_gameScene.removeChild(hitScoreText);
 		}
 		
-		private function createTextField(text:String, animate:Boolean = false):TextField {
-			var textField:TextField = new TextField(200, 75, text, "visitor", 24, 0xffffff);
+		private function createTextField(text:String, color:uint = 0xffffff):TextField {
+			var textField:TextField = new TextField(200, 75, text, "visitor", 24, color);
 			return textField;
 		}
 		
