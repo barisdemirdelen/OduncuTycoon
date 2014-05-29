@@ -1,4 +1,5 @@
 package {
+	import feathers.themes.MetalWorksMobileTheme;
 	import starling.display.Sprite;
 	
 	/**
@@ -8,6 +9,7 @@ package {
 	public class StarlingMain extends Sprite {
 		
 		public function StarlingMain() {
+			new MetalWorksMobileTheme(false);
 			Main.onStarlingReady();
 		}
 	}

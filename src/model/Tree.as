@@ -49,15 +49,17 @@ package model {
 			if (!SoundManager.instance.isAgacPlaying()) {
 				SoundManager.instance.playAgacWalkSound();
 			}
+			
+			_container.addChild(_clip);
 		}
 		
 		override public function die():void {
 			super.die();
-			if (_clip) {
+			if (_container) {
 				if (_facingRight) {
-					eaze(_clip).to(2.5, {y: Starling.current.stage.stageHeight + _clip.height, x: _x - _clip.height, rotation: -Math.PI / 2}).onComplete(destroy);
+					eaze(_container).to(2.5, {y: Starling.current.stage.stageHeight + _clip.height, x: _x - _clip.height, rotation: -Math.PI / 2}).onComplete(destroy);
 				} else {
-					eaze(_clip).to(2.5, {y: Starling.current.stage.stageHeight + _clip.height, x: _x + _clip.height, rotation: Math.PI / 2}).onComplete(destroy);
+					eaze(_container).to(2.5, {y: Starling.current.stage.stageHeight + _clip.height, x: _x + _clip.height, rotation: Math.PI / 2}).onComplete(destroy);
 				}
 			} else {
 				destroy();

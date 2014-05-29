@@ -26,13 +26,15 @@ package model {
 			_explodeClip.stop();
 			_facingRight = true;
 			_health = 10;
+			_maxHealth = 10;
+			_container.addChild(_clip);
 		}
 		
 		override protected function onHit(e:TimerEvent = null):void {
-			super.onHit(e);
 			if(_hitTargets.length > 0) {
 				SoundManager.instance.playTestereHitSound();
 			}
+			super.onHit(e);
 		}
 		
 		override public function die():void {

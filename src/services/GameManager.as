@@ -1,6 +1,7 @@
-package services  {
+package services {
 	import aze.motion.eaze;
 	import events.CreatureEvent;
+	import events.GeneratorEvent;
 	import flash.display.SimpleButton;
 	import flash.events.AccelerometerEvent;
 	import flash.events.Event;
@@ -137,7 +138,7 @@ package services  {
 			
 			_adam.y = _stage.stageHeight - _adam.clip.height + 5;
 			_adam.x = _stage.stageWidth / 2 - _adam.clip.width / 2;
-			_adamLayer.addChild(_adam.clip);
+			_adamLayer.addChild(_adam.container);
 			_gameScene.addChild(Assets.getMovieClip("cimenler"));
 			
 			_admob = Admob.getInstance(); //create a instance
@@ -172,6 +173,9 @@ package services  {
 			_massacreTimer = new Timer(1000);
 			_massacreTimer.addEventListener(TimerEvent.TIMER, onMassacreTimer);
 			_massacreTimer.start();
+			
+			TreeGeneratorService.instance.addEventListener(GeneratorEvent.TREE_GENERATED, onTreeCreated);
+			TreeGeneratorService.instance.start(_treeLayer);
 		}
 		
 		private function onFrame(e:EnterFrameEvent):void {
@@ -190,54 +194,12 @@ package services  {
 				if (sawHitBounds.intersects(treeHitBounds)) {
 					_adam.addHitTarget(tree);
 					_adam.startHitting();
-						//tree.dying = true;
-						//if (tree.isBoss) {
-						//eaze(tree.clip).to(4, {y: _stage.stageHeight}).onComplete(onTreeDead, tree);
-						//} else {
-						//if (tree.facingRight) {
-						//eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x - tree.clip.height, rotation: -Math.PI / 2}).onComplete(onTreeDead, tree);
-						//} else {
-						//eaze(tree.clip).to(2.5, {y: _stage.stageHeight + tree.clip.height, x: tree.clip.x + tree.clip.height, rotation: Math.PI / 2}).onComplete(onTreeDead, tree);
-						//}
-						//}
-						//var y:Number = _stage.stageHeight - 20 * Math.random();
-						//var x:Number = _stage.stageWidth / 2 - Math.random() * 5;
-						//if (_adam.scaleX > 0) {
-						//x = _stage.stageWidth / 2 + Math.random() * 10;
-						//}
-						//var hitScoreText:TextField = createTextField(String(Math.floor(Math.random() * 9002)));
-						//hitScoreText.x = x;
-						//hitScoreText.y = y;
-						//_gameScene.addChild(hitScoreText);
-						//eaze(hitScoreText).to(2, {y: -hitScoreText.height}).onComplete(onHitScoreFinished, hitScoreText);
-						//
-						//var randomDarbe:String = _darbeArray[Math.floor(Math.random() * _darbeArray.length)];
-						//var localizedDarbe:String = LocaleUtil.localize(randomDarbe) + " " + LocaleUtil.localize("blow") + "!";
-						//var darbeText:TextField = createTextField(localizedDarbe);
-						//y = _stage.stageHeight - 20 * Math.random();
-						//x = _stage.stageWidth / 2 + Math.random() * 5;
-						//if (_adam.scaleX > 0) {
-						//x = _stage.stageWidth / 2 - Math.random() * 10;
-						//}
-						//darbeText.x = x;
-						//darbeText.y = y;
-						//_gameScene.addChild(darbeText);
-						//eaze(darbeText).to(2.5, {y: -darbeText.height}).onComplete(onHitScoreFinished, darbeText);
-						//SoundManager.instance.playTestereHitSound();
 				} else if (adamHitBounds.intersects(treeHitBounds)) {
 					tree.startHitting();
 					tree.addHitTarget(_adam);
-						//killAdam();
-						//break;
 				} else {
 					tree.x += tree.speed;
 				}
-			}
-			if (_adam.dead) {
-				for each (tree in _trees) {
-					tree.killTweens();
-				}
-				return;
 			}
 		}
 		
@@ -259,32 +221,14 @@ package services  {
 			_scoreField.text = LocaleUtil.localize("wood") + ": " + _score;
 			
 			_treeSpeed *= 1500 / 1499;
-			_treeCreationRatio *= 1500 / 1499;
-			if (_treeCreationRatio >= Math.random()) {
-				createTree();
-			}
+			
 			
 			checkAchievements();
 		}
 		
-		private function createTree():void {
-			var newTree:Tree = new Tree();
-			_treeLayer.addChild(newTree.clip);
-			
-			newTree.y = _stage.stageHeight - newTree.clip.height;
-			var left:Boolean = Math.random() < 0.5;
-			if (left || newTree is Boss) {
-				newTree.facingRight = false;
-				newTree.x = _stage.stageWidth;
-				newTree.speed = -_treeSpeed;
-				_trees.push(newTree);
-			} else {
-				newTree.facingRight = true;
-				GraphicsUtil.reverseHorizontal(newTree.clip);
-				newTree.x -= 2 * newTree.clip.width;
-				newTree.speed = _treeSpeed;
-				_trees.push(newTree);
-			}
+		private function onTreeCreated(e:GeneratorEvent):void {
+			var newTree:Tree = e.tree;
+			_trees.push(newTree);
 			newTree.addEventListener(CreatureEvent.CREATURE_TOOK_DAMAGE, onTreeTookDamage);
 			newTree.addEventListener(CreatureEvent.CREATURE_DYING, onTreeDying);
 			newTree.addEventListener(CreatureEvent.CREATURE_DEAD, onTreeDead);
@@ -295,7 +239,7 @@ package services  {
 			tree.removeEventListener(CreatureEvent.CREATURE_DYING, onTreeDying);
 			tree.removeEventListener(CreatureEvent.CREATURE_TOOK_DAMAGE, onTreeTookDamage);
 			_adam.removeHitTarget(tree);
-			_score+= tree.maxHealth;
+			_score += tree.maxHealth;
 		}
 		
 		private function onTreeDead(e:CreatureEvent):void {
@@ -350,6 +294,12 @@ package services  {
 		}
 		
 		public function onAdamDying(e:CreatureEvent):void {
+			for each (var tree:Tree in _trees) {
+				tree.killTweens();
+				tree.removeAllHitTargets();
+			}
+			TreeGeneratorService.instance.stop();
+			
 			SoundManager.instance.stopAgacWalkSound();
 			SoundManager.instance.stopBossSound();
 			_finishTimer = new Timer(3000, 1);
@@ -428,7 +378,9 @@ package services  {
 		}
 		
 		private function onHitScoreFinished(hitScoreText:TextField):void {
-			_gameScene.removeChild(hitScoreText);
+			if (_gameScene) {
+				_gameScene.removeChild(hitScoreText);
+			}
 		}
 		
 		private function createTextField(text:String, color:uint = 0xffffff):TextField {
@@ -437,7 +389,7 @@ package services  {
 		}
 		
 		override protected function destroy(e:Event = null):void {
-			
+			TreeGeneratorService.instance.stop();
 			SoundManager.instance.stopTestereCleanSound();
 			for each (var tree:Tree in _trees) {
 				tree.destroy();

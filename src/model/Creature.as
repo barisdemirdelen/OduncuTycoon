@@ -1,6 +1,7 @@
 package model {
 	import aze.motion.eaze;
 	import events.CreatureEvent;
+	import feathers.controls.ProgressBar;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
@@ -8,6 +9,7 @@ package model {
 	import flash.utils.Timer;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.MovieClip;
+	import starling.display.Sprite;
 	
 	/**
 	 * ...
@@ -15,6 +17,7 @@ package model {
 	 */
 	public class Creature extends EventDispatcher {
 		
+		protected var _container:Sprite;
 		protected var _clip:MovieClip = null;
 		protected var _maxHealth:Number = 3;
 		protected var _health:Number = 3;
@@ -34,7 +37,10 @@ package model {
 		protected var _hitTimer:Timer;
 		protected var _hitTargets:Array;
 		
+		protected var _lifeBar:ProgressBar;
+		
 		public function Creature() {
+			_container = new Sprite();
 			_hitTargets = new Array();
 		}
 		
@@ -81,12 +87,28 @@ package model {
 		}
 		
 		public function takeDamage(damage:Number):void {
-			_health = _health - damage;
+			_health = Math.max(_health - damage,0);
 			_lastTakenDamage = damage;
 			dispatchEvent(new CreatureEvent(CreatureEvent.CREATURE_TOOK_DAMAGE, this));
+			
+			if (!_lifeBar) {
+				createLifeBar();
+			}
+			_lifeBar.value = _health;
 			if (_health <= 0) {
 				die();
 			}
+		}
+		
+		private function createLifeBar():void {
+			_lifeBar = new ProgressBar();
+			_lifeBar.minimum = 0;
+			_lifeBar.maximum = _maxHealth;
+			_lifeBar.value = _health;
+			_lifeBar.setSize(75, 10);
+			_lifeBar.x = _container.width / 2 - _lifeBar.width / 2;
+			_lifeBar.y = -_lifeBar.height - 5;
+			_container.addChild(_lifeBar);
 		}
 		
 		public function die():void {
@@ -98,9 +120,17 @@ package model {
 		public function destroy(e:Event = null):void {
 			stopHitting();
 			if (_clip) {
-				killTweens();
 				_clip.removeFromParent(true);
 				_clip = null
+			}
+			if (_lifeBar) {
+				_lifeBar.removeFromParent(true);
+				_lifeBar = null;
+			}
+			if (_container) {
+				killTweens();
+				_container.removeFromParent(true);
+				_container = null;
 			}
 			dispatchEvent(new CreatureEvent(CreatureEvent.CREATURE_DEAD, this));
 		}
@@ -119,8 +149,8 @@ package model {
 		}
 		
 		public function killTweens():void {
-			if (_clip) {
-				eaze(_clip).killTweens();
+			if (_container) {
+				eaze(_container).killTweens();
 			}
 		}
 		
@@ -186,8 +216,8 @@ package model {
 		
 		public function set x(value:Number):void {
 			_x = value;
-			if (_clip) {
-				_clip.x = _x;
+			if (_container) {
+				_container.x = _x;
 			}
 		}
 		
@@ -197,8 +227,8 @@ package model {
 		
 		public function set y(value:Number):void {
 			_y = value;
-			if (_clip) {
-				_clip.y = _y;
+			if (_container) {
+				_container.y = _y;
 			}
 		}
 		
@@ -228,6 +258,10 @@ package model {
 		
 		public function set maxHealth(value:Number):void {
 			_maxHealth = value;
+		}
+		
+		public function get container():Sprite {
+			return _container;
 		}
 	
 	}

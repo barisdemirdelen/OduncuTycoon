@@ -18,6 +18,8 @@
     <class path="src" />
     <class path="lib\EazeTween" />
     <class path="lib\Starling" />
+    <class path="lib\Feathers" />
+    <class path="lib\MetalWorksMobileTheme" />
   </classpaths>
   <!-- Build options -->
   <build>
