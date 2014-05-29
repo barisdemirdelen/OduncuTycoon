@@ -16,6 +16,7 @@ package model {
 	public class Creature extends EventDispatcher {
 		
 		protected var _clip:MovieClip = null;
+		protected var _maxHealth:Number = 3;
 		protected var _health:Number = 3;
 		protected var _attackDamage:Number = 1;
 		protected var _attackSpeed:Number = 1;
@@ -64,13 +65,13 @@ package model {
 		}
 		
 		public function addHitTarget(creature:Creature):void {
-			if(_hitTargets.indexOf(creature) <0) {
+			if (_hitTargets.indexOf(creature) < 0) {
 				_hitTargets.push(creature);
 			}
 		}
 		
 		public function removeHitTarget(creature:Creature):void {
-			if(_hitTargets.indexOf(creature) >=0) {
+			if (_hitTargets.indexOf(creature) >= 0) {
 				_hitTargets.splice(_hitTargets.indexOf(creature), 1);
 			}
 		}
@@ -219,6 +220,14 @@ package model {
 		
 		public function get lastTakenDamage():Number {
 			return _lastTakenDamage;
+		}
+		
+		public function get maxHealth():Number {
+			return _maxHealth;
+		}
+		
+		public function set maxHealth(value:Number):void {
+			_maxHealth = value;
 		}
 	
 	}

@@ -25,7 +25,7 @@ package model {
 			_explodeClip.loop = false;
 			_explodeClip.stop();
 			_facingRight = true;
-			_health = 100;
+			_health = 10;
 		}
 		
 		override protected function onHit(e:TimerEvent = null):void {
@@ -36,19 +36,20 @@ package model {
 		}
 		
 		override public function die():void {
-			super.die();
-			
-			var parent:DisplayObjectContainer = _clip.parent;
-			_clip.removeFromParent(true);
-			//parent.addChild(_explodeClip);
-			_explodeClip.y = 80;
-			_explodeClip.play();
-			
-			if (_clip.scaleX < 0) {
-				GraphicsUtil.reverseHorizontal(_explodeClip);
+			if(!_dead) {
+				var parent:DisplayObjectContainer = _clip.parent;
+				_clip.removeFromParent(true);
+				parent.addChild(_explodeClip);
+				_explodeClip.y = 80;
+				_explodeClip.play();
+				
+				if (_clip.scaleX < 0) {
+					GraphicsUtil.reverseHorizontal(_explodeClip);
+				}
+				
+				super.die();
+				_dead = true;
 			}
-			
-			_dead = true;
 		}
 		
 		override public function getHitBounds(scene:DisplayObjectContainer, hitbox:Rectangle = null):Rectangle {

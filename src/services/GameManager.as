@@ -132,6 +132,8 @@ package services  {
 			_adamLayer = new Sprite();
 			_gameScene.addChild(_adamLayer);
 			_adam = new Adam();
+			_adam.addEventListener(CreatureEvent.CREATURE_DYING, onAdamDying);
+			_adam.addEventListener(CreatureEvent.CREATURE_TOOK_DAMAGE, onAdamTookDamage);
 			
 			_adam.y = _stage.stageHeight - _adam.clip.height + 5;
 			_adam.x = _stage.stageWidth / 2 - _adam.clip.width / 2;
@@ -154,7 +156,7 @@ package services  {
 			_trees = new Array();
 			SoundManager.instance.playTestereCleanSound();
 			_gameScene.addEventListener(TouchEvent.TOUCH, onClick);
-			_scoreField = createTextField(LocaleUtil.localize("score") + ": " + _score);
+			_scoreField = createTextField(LocaleUtil.localize("wood") + ": " + _score);
 			_scoreField.x = 150;
 			_scoreField.y = 15;
 			_scoreField.hAlign = HAlign.LEFT;
@@ -254,8 +256,7 @@ package services  {
 				SoundManager.instance.stopAgacWalkSound();
 			}
 			_lastScore = _score;
-			_score = int(getTimer() - _startTime);
-			_scoreField.text = LocaleUtil.localize("score") + ": " + _score;
+			_scoreField.text = LocaleUtil.localize("wood") + ": " + _score;
 			
 			_treeSpeed *= 1500 / 1499;
 			_treeCreationRatio *= 1500 / 1499;
@@ -294,6 +295,7 @@ package services  {
 			tree.removeEventListener(CreatureEvent.CREATURE_DYING, onTreeDying);
 			tree.removeEventListener(CreatureEvent.CREATURE_TOOK_DAMAGE, onTreeTookDamage);
 			_adam.removeHitTarget(tree);
+			_score+= tree.maxHealth;
 		}
 		
 		private function onTreeDead(e:CreatureEvent):void {
@@ -347,17 +349,12 @@ package services  {
 			}
 		}
 		
-		public function killAdam():void {
-			_adam.die();
+		public function onAdamDying(e:CreatureEvent):void {
 			SoundManager.instance.stopAgacWalkSound();
 			SoundManager.instance.stopBossSound();
 			_finishTimer = new Timer(3000, 1);
 			_finishTimer.addEventListener(TimerEvent.TIMER, onFinished);
 			_finishTimer.start();
-			
-			for each (var tree:Tree in _trees) {
-				tree.killTweens();
-			}
 			
 			if (_killedTreeCount == 0) {
 				GameCenterManager.instance.unlockAchievement("dieFirst");
@@ -366,6 +363,10 @@ package services  {
 			GameCenterManager.instance.incrementAchievement("die10");
 			GameCenterManager.instance.incrementAchievement("die100");
 			GameCenterManager.instance.incrementAchievement("die1000");
+		}
+		
+		public function onAdamTookDamage(e:CreatureEvent):void {
+			
 		}
 		
 		private function checkAchievements():void {
