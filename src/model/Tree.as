@@ -7,6 +7,7 @@ package model {
 	import starling.display.DisplayObjectContainer;
 	import starling.display.MovieClip;
 	import starling.textures.Texture;
+	import util.Assets;
 	
 	/**
 	 * ...

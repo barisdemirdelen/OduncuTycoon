@@ -4,6 +4,8 @@ package model {
 	import sound.SoundManager;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.MovieClip;
+	import util.Assets;
+	import util.GraphicsUtil;
 	
 	/**
 	 * ...

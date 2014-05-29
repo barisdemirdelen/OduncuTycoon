@@ -1,5 +1,4 @@
 package {
-	import flash.desktop.NativeApplication;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -8,10 +7,17 @@ package {
 	import flash.geom.Rectangle;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
+	import services.GameCenterManager;
+	import services.GameManager;
+	import services.IntroAnimationManager;
+	import services.MainMenuManager;
 	import sound.SoundManager;
 	import starling.core.Starling;
 	import starling.utils.RectangleUtil;
 	import starling.utils.ScaleMode;
+	import util.Assets;
+	import util.FlashStageHelper;
+	import util.LocaleUtil;
 	
 	/**
 	 * ...
@@ -43,12 +49,7 @@ package {
 		}
 		
 		public static function onStarlingReady():void {
-			Assets.initialize(onAssetsReady);
-		}
-		
-		private static function onAssetsReady():void {
-			startAnimation();
-			//new GameManager(initMenu);
+			Assets.initialize(startAnimation);
 		}
 		
 		public static function startAnimation():void {
