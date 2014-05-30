@@ -42,7 +42,8 @@ package model {
 				var parent:DisplayObjectContainer = _clip.parent;
 				_clip.removeFromParent(true);
 				parent.addChild(_explodeClip);
-				_explodeClip.y = 80;
+				_explodeClip.x = -container.x;
+				_explodeClip.y = 80 - container.y;
 				_explodeClip.play();
 				
 				if (_clip.scaleX < 0) {

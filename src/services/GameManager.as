@@ -79,7 +79,6 @@ package services {
 		private var _bossLayer:Sprite;
 		private var _adamLayer:Sprite;
 		
-		private const _adamOffset:Number = 5;
 		private var _backgroundSprite:Sprite;
 		
 		private var _killedTreeCount:int;
@@ -261,6 +260,9 @@ package services {
 		}
 		
 		private function onTreeTookDamage(e:CreatureEvent):void {
+			if (!_gameScene) {
+				return;
+			}
 			var tree:Tree = e.creature as Tree;
 			var textField:TextField = createTextField("-" + tree.lastTakenDamage, 0xffffff);
 			textField.x = tree.x;
@@ -268,7 +270,8 @@ package services {
 				textField.x -= tree.clip.width;
 			}
 			textField.y = tree.y + 3 * tree.clip.height / 4;
-			eaze(textField).to(2.5, {y: -textField.height}).onComplete(onHitScoreFinished, textField);
+			eaze(textField).to(2.5, { y: -textField.height } ).onComplete(onHitScoreFinished, textField);
+			
 			_gameScene.addChild(textField);
 		}
 		
