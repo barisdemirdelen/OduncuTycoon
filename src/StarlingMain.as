@@ -6,6 +6,7 @@ package {
 	import robotlegs.extensions.starlingViewMap.StarlingViewMapExtension;
 	import starling.core.Starling;
 	import starling.display.Sprite;
+	import themes.OduncuTheme;
 	import util.Assets;
 	
 	/**
@@ -17,7 +18,6 @@ package {
 		private var _context:Context;
 		
 		public function StarlingMain() {
-			new MetalWorksMobileTheme(false);
 			Assets.initialize(onAssetsLoaded);
 		}
 		
@@ -27,6 +27,7 @@ package {
 			_context.configure(new ContextView(Starling.current.nativeStage));
 			_context.configure(OduncuConfig, Starling.current);
 			_context.initialize();
+			new OduncuTheme();
 		}
 	}
 

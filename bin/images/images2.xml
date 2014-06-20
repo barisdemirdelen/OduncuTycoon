@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:10cdbed89c601c4724f5cf13a32ecb8c:cc99922b9dfa2d942e2fb06b6e30268c:2914a70abe4c649e7daaecc0ddb23b81$ -->
+<!-- $TexturePacker:SmartUpdate:423ba7cf415929cab12d98a41c2914b2:019ef3422d56ad4c2fd306f9da5f46a9:2914a70abe4c649e7daaecc0ddb23b81$ -->
 <TextureAtlas imagePath="images2.png">
     <SubTexture name="skipDown" x="2" y="2" width="33" height="26"/>
-    <SubTexture name="skipUp" x="2" y="30" width="33" height="26"/>
+    <SubTexture name="skipUp" x="37" y="2" width="33" height="26"/>
+    <SubTexture name="upgradeButton" x="72" y="2" width="199" height="119"/>
+    <SubTexture name="upgradeButtonSelected" x="273" y="2" width="202" height="122"/>
+    <SubTexture name="upgradePopupBackground" x="2" y="126" width="549" height="529"/>
+    <SubTexture name="visitor" x="553" y="126" width="91" height="509"/>
 </TextureAtlas>

@@ -8,6 +8,7 @@ package services {
 	import view.game.GameView;
 	import view.intro.IntroAnimationView;
 	import view.mainMenu.MainMenuView;
+	import view.upgrade.UpgradeView;
 	
 	/**
 	 * ...
@@ -52,6 +53,9 @@ package services {
 					break;
 				case GAME: 
 					newStarlingView = new GameView();
+					break;
+				case UPGRADE: 
+					newStarlingView = new UpgradeView();
 					break;
 				default: 
 					break;

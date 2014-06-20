@@ -51,6 +51,10 @@ package view.game {
 		public function get menuButton():Button {
 			return _menuButton;
 		}
+		
+		public function get scoreText():TextField {
+			return _scoreText;
+		}
 	
 	}
 

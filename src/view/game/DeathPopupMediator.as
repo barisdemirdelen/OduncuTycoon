@@ -30,7 +30,7 @@ package view.game {
 			if (touch) {
 				view.menuButton.removeEventListeners(TouchEvent.TOUCH);
 				PopUpManager.removePopUp(view, true);
-				changeScreenSignal.dispatch(ScreenManager.MAIN_MENU);
+				changeScreenSignal.dispatch(ScreenManager.UPGRADE);
 			}
 		}
 	

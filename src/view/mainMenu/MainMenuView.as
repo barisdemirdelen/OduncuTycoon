@@ -24,12 +24,14 @@ package view.mainMenu {
 		private var _startButton:SimpleButton;
 		private var _highScoreButton:SimpleButton;
 		private var _achievementButton:SimpleButton;
+		private var _upgradeButton:SimpleButton;
 		
 		public function MainMenuView() {
 			_mainMenu = new mainMenuSprite();
 			_startButton = _mainMenu.getChildByName("startButton") as SimpleButton;
 			_highScoreButton = _mainMenu.getChildByName("highScores") as SimpleButton;
 			_achievementButton = _mainMenu.getChildByName("achievements") as SimpleButton;
+			_upgradeButton = _mainMenu.getChildByName("upgrade") as SimpleButton;
 		}
 		
 		override public function initialize():void {
@@ -46,6 +48,11 @@ package view.mainMenu {
 			(_achievementButton.overState as TextField).text = LocaleUtil.localize("achievements");
 			(_achievementButton.downState as TextField).text = LocaleUtil.localize("achievements");
 			(_achievementButton.hitTestState as TextField).text = LocaleUtil.localize("achievements");
+			
+			(_upgradeButton.upState as TextField).text = LocaleUtil.localize("upgrade");
+			(_upgradeButton.overState as TextField).text = LocaleUtil.localize("upgrade");
+			(_upgradeButton.downState as TextField).text = LocaleUtil.localize("upgrade");
+			(_upgradeButton.hitTestState as TextField).text = LocaleUtil.localize("upgrade");
 		
 		}
 		
@@ -72,6 +79,10 @@ package view.mainMenu {
 		
 		public function get mainMenu():MovieClip {
 			return _mainMenu;
+		}
+		
+		public function get upgradeButton():SimpleButton {
+			return _upgradeButton;
 		}
 	
 	}

@@ -223,6 +223,7 @@ package view.game {
 		public function onFinished(e:Event = null):void {
 			GameCenterManager.instance.submitScore(_score);
 			var deathPopup:DeathPopupView = new DeathPopupView();
+			deathPopup.scoreText.text = LocaleUtil.localize("wood") + ": "+ _score;
 			PopUpManager.addPopUp(deathPopup);
 		}
 		

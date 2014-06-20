@@ -7,8 +7,8 @@ package view.mainMenu {
 	import robotlegs.bender.bundles.mvcs.Mediator;
 	import services.GameCenterManager;
 	import services.ScreenManager;
-	import signals.ChangeScreenSignal;
 	import services.SoundManager;
+	import signals.ChangeScreenSignal;
 	
 	/**
 	 * ...
@@ -30,11 +30,16 @@ package view.mainMenu {
 			view.startButton.addEventListener(MouseEvent.CLICK, onStartClick);
 			view.highScoreButton.addEventListener(MouseEvent.CLICK, onHighScoresClick);
 			view.achievementButton.addEventListener(MouseEvent.CLICK, onAchievementClick);
+			view.upgradeButton.addEventListener(MouseEvent.CLICK, onUpgradeClick);
 			
 			if (!GameCenterManager.isSupported) {
 				view.highScoreButton.visible = false;
 				view.achievementButton.visible = false;
 			}
+		}
+		
+		private function onUpgradeClick(e:Event):void {
+			changeScreenSignal.dispatch(ScreenManager.UPGRADE);
 		}
 		
 		private function onHighScoresClick(e:Event):void {
