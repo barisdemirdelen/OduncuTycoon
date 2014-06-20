@@ -1,11 +1,9 @@
 package services {
-	import events.GeneratorEvent;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	import model.Boss;
 	import model.Tree;
+	import signals.TreeGeneratedSignal;
 	import starling.core.Starling;
 	import starling.display.DisplayObjectContainer;
 	import util.GraphicsUtil;
@@ -14,9 +12,12 @@ package services {
 	 * ...
 	 * @author Barış Demirdelen
 	 */
-	public class TreeGeneratorService extends EventDispatcher {
+	public class TreeGeneratorService {
 		
 		public static var DIFFICULTY:Number = 1.16;
+		
+		[Inject]
+		public var treeGeneratedSignal:TreeGeneratedSignal;
 		
 		protected var _generationTimer:Timer;
 		protected var _difficultyTimer:Timer;
@@ -81,7 +82,7 @@ package services {
 			newTree.health = _treeHealth;
 			_scene.addChild(newTree.container);
 			
-			dispatchEvent(new GeneratorEvent(GeneratorEvent.TREE_GENERATED, newTree));
+			treeGeneratedSignal.dispatch(newTree);
 			addGenerationTimer(_treeInterval);
 		}
 		

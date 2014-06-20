@@ -1,12 +1,11 @@
 package model {
 	import aze.motion.eaze;
-	import events.CreatureEvent;
 	import feathers.controls.ProgressBar;
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
 	import flash.utils.Timer;
+	import org.osflash.signals.Signal;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.MovieClip;
 	import starling.display.Sprite;
@@ -15,7 +14,11 @@ package model {
 	 * ...
 	 * @author Barış Demirdelen
 	 */
-	public class Creature extends EventDispatcher {
+	public class Creature {
+		
+		private var _creatureDyingSignal:Signal;
+		private var _creatureDeadSignal:Signal;
+		private var _creatureTookDamageSignal:Signal;
 		
 		protected var _container:Sprite;
 		protected var _clip:MovieClip = null;
@@ -42,6 +45,9 @@ package model {
 		public function Creature() {
 			_container = new Sprite();
 			_hitTargets = new Array();
+			_creatureDyingSignal = new Signal();
+			_creatureDeadSignal = new Signal();
+			_creatureTookDamageSignal = new Signal();
 		}
 		
 		public function startHitting():void {
@@ -87,9 +93,9 @@ package model {
 		}
 		
 		public function takeDamage(damage:Number):void {
-			_health = Math.max(_health - damage,0);
+			_health = Math.max(_health - damage, 0);
 			_lastTakenDamage = damage;
-			dispatchEvent(new CreatureEvent(CreatureEvent.CREATURE_TOOK_DAMAGE, this));
+			creatureTookDamageSignal.dispatch(this);
 			
 			if (!_lifeBar) {
 				createLifeBar();
@@ -114,7 +120,7 @@ package model {
 		public function die():void {
 			_dying = true;
 			stopHitting();
-			dispatchEvent(new CreatureEvent(CreatureEvent.CREATURE_DYING, this));
+			creatureDyingSignal.dispatch(this);
 		}
 		
 		public function destroy(e:Event = null):void {
@@ -132,7 +138,7 @@ package model {
 				_container.removeFromParent(true);
 				_container = null;
 			}
-			dispatchEvent(new CreatureEvent(CreatureEvent.CREATURE_DEAD, this));
+			creatureDeadSignal.dispatch(this);
 		}
 		
 		public function getHitBounds(scene:DisplayObjectContainer, hitbox:Rectangle = null):Rectangle {
@@ -262,6 +268,18 @@ package model {
 		
 		public function get container():Sprite {
 			return _container;
+		}
+		
+		public function get creatureDyingSignal():Signal {
+			return _creatureDyingSignal;
+		}
+		
+		public function get creatureDeadSignal():Signal {
+			return _creatureDeadSignal;
+		}
+		
+		public function get creatureTookDamageSignal():Signal {
+			return _creatureTookDamageSignal;
 		}
 	
 	}

@@ -1,7 +1,5 @@
 package view.game {
 	import aze.motion.eaze;
-	import events.CreatureEvent;
-	import events.GeneratorEvent;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
@@ -14,6 +12,7 @@ package view.game {
 	import services.GameStateManager;
 	import services.SoundManager;
 	import services.TreeGeneratorService;
+	import signals.TreeGeneratedSignal;
 	import starling.core.Starling;
 	import starling.display.Button;
 	import starling.display.Quad;
@@ -42,6 +41,9 @@ package view.game {
 		
 		[Inject]
 		public var treeGeneratorService:TreeGeneratorService;
+		
+		[Inject]
+		public var treeGeneratedSignal:TreeGeneratedSignal;
 		
 		[Inject]
 		public var gameStateManager:GameStateManager;
@@ -79,11 +81,11 @@ package view.game {
 			_gameTimer.addEventListener(TimerEvent.TIMER, onTick);
 			_gameTimer.start();
 			
-			treeGeneratorService.addEventListener(GeneratorEvent.TREE_GENERATED, onTreeCreated);
+			treeGeneratedSignal.add(onTreeCreated);
 			treeGeneratorService.start(view.treeLayer);
 			
-			_adam.addEventListener(CreatureEvent.CREATURE_DYING, onAdamDying);
-			_adam.addEventListener(CreatureEvent.CREATURE_TOOK_DAMAGE, onAdamTookDamage);
+			_adam.creatureDyingSignal.addOnce(onAdamDying);
+			_adam.creatureTookDamageSignal.add(onAdamTookDamage);
 			view.gameScene.addEventListener(TouchEvent.TOUCH, onClick);
 			Starling.current.stage.addEventListener(EnterFrameEvent.ENTER_FRAME, onFrame);
 			
@@ -133,25 +135,20 @@ package view.game {
 			view.scoreField.text = LocaleUtil.localize("wood") + ": " + _score;
 		}
 		
-		private function onTreeCreated(e:GeneratorEvent):void {
-			var newTree:Tree = e.tree;
-			_trees.push(newTree);
-			newTree.addEventListener(CreatureEvent.CREATURE_TOOK_DAMAGE, onTreeTookDamage);
-			newTree.addEventListener(CreatureEvent.CREATURE_DYING, onTreeDying);
-			newTree.addEventListener(CreatureEvent.CREATURE_DEAD, onTreeDead);
+		private function onTreeCreated(tree:Tree):void {
+			_trees.push(tree);
+			tree.creatureTookDamageSignal.add(onTreeTookDamage);
+			tree.creatureDyingSignal.addOnce(onTreeDying);
+			tree.creatureDeadSignal.addOnce(onTreeDying);
 		}
 		
-		private function onTreeDying(e:CreatureEvent):void {
-			var tree:Tree = e.creature as Tree;
-			tree.removeEventListener(CreatureEvent.CREATURE_DYING, onTreeDying);
-			tree.removeEventListener(CreatureEvent.CREATURE_TOOK_DAMAGE, onTreeTookDamage);
+		private function onTreeDying(tree:Tree):void {
+			tree.creatureTookDamageSignal.remove(onTreeDying);
 			_adam.removeHitTarget(tree);
 			_score += tree.maxHealth;
 		}
 		
-		private function onTreeDead(e:CreatureEvent):void {
-			var tree:Tree = e.creature as Tree;
-			tree.removeEventListener(CreatureEvent.CREATURE_DEAD, onTreeDead);
+		private function onTreeDead(tree:Tree):void {
 			if (tree == _boss) {
 				_boss = null;
 				view.backgroundSprite.removeChildren();
@@ -161,11 +158,10 @@ package view.game {
 			_trees.splice(_trees.indexOf(tree), 1);
 		}
 		
-		private function onTreeTookDamage(e:CreatureEvent):void {
+		private function onTreeTookDamage(tree:Tree):void {
 			if (!view.gameScene) {
 				return;
 			}
-			var tree:Tree = e.creature as Tree;
 			var textField:TextField = view.createTextField("-" + tree.lastTakenDamage, 0xffffff);
 			textField.x = tree.x;
 			if (tree.facingRight) {
@@ -198,13 +194,13 @@ package view.game {
 			}
 		}
 		
-		public function onAdamDying(e:CreatureEvent):void {
+		public function onAdamDying(adam:Adam):void {
 			for each (var tree:Tree in _trees) {
 				tree.killTweens();
 				tree.removeAllHitTargets();
 			}
 			treeGeneratorService.stop();
-			
+			_adam.creatureTookDamageSignal.remove(onAdamTookDamage);
 			SoundManager.instance.stopAgacWalkSound();
 			SoundManager.instance.stopBossSound();
 			_finishTimer = new Timer(3000, 1);
@@ -212,7 +208,7 @@ package view.game {
 			_finishTimer.start();
 		}
 		
-		public function onAdamTookDamage(e:CreatureEvent):void {
+		public function onAdamTookDamage(adam:Adam):void {
 			var textField:TextField = view.createTextField("-" + _adam.lastTakenDamage, 0x000000);
 			textField.x = _adam.x;
 			if (_adam.facingRight) {
@@ -267,6 +263,7 @@ package view.game {
 			admobService.hideAds();
 			
 			treeGeneratorService.stop();
+			treeGeneratedSignal.remove(onTreeCreated);
 			SoundManager.instance.stopTestereCleanSound();
 			for each (var tree:Tree in _trees) {
 				tree.destroy();

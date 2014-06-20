@@ -10,6 +10,7 @@ package {
 	import services.ScreenManager;
 	import services.TreeGeneratorService;
 	import signals.ChangeScreenSignal;
+	import signals.TreeGeneratedSignal;
 	import view.base.MainFlashView;
 	import view.base.MainStarlingView;
 	import view.game.GameMediator;
@@ -42,12 +43,15 @@ package {
 			
 			injector.map(MainFlashView).asSingleton();
 			injector.map(MainStarlingView).asSingleton();
+			
 			injector.map(ScreenManager).asSingleton();
-			injector.map(ChangeScreenSignal).asSingleton();
 			injector.map(GameCenterManager).asSingleton();
 			injector.map(TreeGeneratorService).asSingleton();
 			injector.map(GameStateManager).asSingleton();
 			injector.map(AdmobService).asSingleton();
+			
+			injector.map(ChangeScreenSignal).asSingleton();
+			injector.map(TreeGeneratedSignal).asSingleton();
 			
 			mediatorMap.map(IntroAnimationView).toMediator(IntroAnimationMediator);
 			mediatorMap.map(MainMenuView).toMediator(MainMenuMediator);
