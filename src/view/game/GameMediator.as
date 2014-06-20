@@ -1,5 +1,6 @@
 package view.game {
 	import aze.motion.eaze;
+	import feathers.core.PopUpManager;
 	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
@@ -220,39 +221,9 @@ package view.game {
 		}
 		
 		public function onFinished(e:Event = null):void {
-			var deathPopup:Sprite = new Sprite();
-			
-			var deathBg:Quad = new Quad(200, 200, 0x000000);
-			deathPopup.addChild(deathBg);
-			var deathText:TextField = view.createTextField(LocaleUtil.localize("deathText"));
-			deathText.y = 10;
-			deathText.x = 10;
-			deathText.hAlign = HAlign.LEFT;
-			deathPopup.addChild(deathText);
-			
-			var scoreText:TextField = view.createTextField(LocaleUtil.localize(LocaleUtil.localize("score") + ": " + _score));
-			scoreText.y = 10 + deathText.height;
-			scoreText.x = 10;
-			scoreText.hAlign = HAlign.LEFT;
-			deathPopup.addChild(scoreText);
-			
-			deathPopup.x = 300;
-			deathPopup.y = 100;
-			_stage.addChild(deathPopup);
-			
-			var menuButton:Button = new Button(Assets.assetManager.getTexture("skipUp"), "", Assets.assetManager.getTexture("skipDown"));
-			menuButton.addEventListener(TouchEvent.TOUCH, function(e:TouchEvent):void {
-					var touch:Touch = e.getTouch(menuButton, TouchPhase.ENDED);
-					if (touch) {
-						menuButton.removeEventListeners(TouchEvent.TOUCH);
-						destroy();
-					}
-				});
-			menuButton.y = 190 - menuButton.height;
-			menuButton.x = 100 - menuButton.width / 2;
-			deathPopup.addChild(menuButton);
-			
 			GameCenterManager.instance.submitScore(_score);
+			var deathPopup:DeathPopupView = new DeathPopupView();
+			PopUpManager.addPopUp(deathPopup);
 		}
 		
 		private function onHitScoreFinished(hitScoreText:TextField):void {

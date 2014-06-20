@@ -13,6 +13,9 @@ package {
 	import signals.TreeGeneratedSignal;
 	import view.base.MainFlashView;
 	import view.base.MainStarlingView;
+	import view.game.DeathPopupMediator;
+	import view.game.DeathPopupView;
+	import view.game.DeathPopupView;
 	import view.game.GameMediator;
 	import view.game.GameView;
 	import view.intro.IntroAnimationMediator;
@@ -56,6 +59,7 @@ package {
 			mediatorMap.map(IntroAnimationView).toMediator(IntroAnimationMediator);
 			mediatorMap.map(MainMenuView).toMediator(MainMenuMediator);
 			mediatorMap.map(GameView).toMediator(GameMediator);
+			mediatorMap.map(DeathPopupView).toMediator(DeathPopupMediator);
 			
 			contextView.view.addChild(MainFlashView(injector.getInstance(MainFlashView)));
 			ScreenManager(injector.getInstance(ScreenManager)).initialize(); 

@@ -25,8 +25,8 @@ package model {
 			_explodeClip.loop = false;
 			_explodeClip.stop();
 			_facingRight = true;
-			_health = 100;
-			_maxHealth = 100;
+			_health = 10;
+			_maxHealth = 10;
 			_container.addChild(_clip);
 		}
 		
