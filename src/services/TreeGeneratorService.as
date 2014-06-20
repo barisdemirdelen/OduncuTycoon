@@ -16,22 +16,20 @@ package services {
 	 */
 	public class TreeGeneratorService extends EventDispatcher {
 		
+		public static var DIFFICULTY:Number = 1.16;
+		
 		protected var _generationTimer:Timer;
 		protected var _difficultyTimer:Timer;
 		
 		protected var _running:Boolean;
 		protected var _scene:DisplayObjectContainer;
 		
-		protected static var _instance:TreeGeneratorService;
-		
+		protected var _difficultyLevel:uint = 0;
 		protected var _treeSpeed:Number;
-		
-		public static function get instance():TreeGeneratorService {
-			if (!_instance) {
-				_instance = new TreeGeneratorService();
-			}
-			return _instance;
-		}
+		protected var _treeHealth:Number;
+		protected var _treeDamage:Number;
+		protected var _treeAttackSpeed:Number;
+		protected var _treeInterval:Number;
 		
 		public function start(scene:DisplayObjectContainer):void {
 			if (_running) {
@@ -39,7 +37,11 @@ package services {
 			}
 			
 			_treeSpeed = 0.95;
-			addGenerationTimer(4000);
+			_treeHealth = 3;
+			_treeDamage = 1;
+			_treeInterval = 4000;
+			_treeAttackSpeed = 1;
+			addGenerationTimer(_treeInterval);
 			
 			_difficultyTimer = new Timer(5000, 0);
 			_difficultyTimer.addEventListener(TimerEvent.TIMER, onIncreaseDifficulty);
@@ -50,7 +52,12 @@ package services {
 		}
 		
 		protected function onIncreaseDifficulty(e:TimerEvent):void {
-		
+			_difficultyLevel++;
+			
+			_treeHealth = _treeHealth * DIFFICULTY;
+			_treeDamage = _treeDamage * DIFFICULTY;
+			_treeAttackSpeed = Math.max(0.025, _treeAttackSpeed - 0.025);
+			_treeInterval = Math.max(100, _treeInterval - 100);
 		}
 		
 		protected function onGenerateTree(e:TimerEvent):void {
@@ -67,10 +74,15 @@ package services {
 				newTree.x -= 2 * newTree.clip.width;
 				newTree.speed = _treeSpeed;
 			}
+			
+			newTree.attackDamage = _treeDamage;
+			newTree.attackSpeed = _treeAttackSpeed;
+			newTree.maxHealth = _treeHealth;
+			newTree.health = _treeHealth;
 			_scene.addChild(newTree.container);
 			
 			dispatchEvent(new GeneratorEvent(GeneratorEvent.TREE_GENERATED, newTree));
-			addGenerationTimer(5000);
+			addGenerationTimer(_treeInterval);
 		}
 		
 		public function stop():void {

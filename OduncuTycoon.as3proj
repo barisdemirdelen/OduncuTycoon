@@ -20,6 +20,11 @@
     <class path="lib\Starling" />
     <class path="lib\Feathers" />
     <class path="lib\MetalWorksMobileTheme" />
+    <class path="lib\Robotlegs" />
+    <class path="lib\As3Signals" />
+    <class path="lib\SignalCommandMap" />
+    <class path="lib\RobotlegsStarlingExtension" />
+    <class path="lib\SwiftSuspenders" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -47,7 +52,7 @@
     <option linkReport="" />
     <option loadExterns="" />
     <option staticLinkRSL="True" />
-    <option additional="-locale=tr_TR,en_US -source-path+=localizations/{locale}" />
+    <option additional="-locale=tr_TR,en_US -source-path+=localizations/{locale} -keep-as3-metadata+=Inject -keep-as3-metadata+=PostConstruct" />
     <option compilerConstants="" />
     <option minorVersion="" />
   </build>

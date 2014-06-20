@@ -8,14 +8,10 @@ package {
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
 	import services.GameCenterManager;
-	import services.GameManager;
-	import services.IntroAnimationManager;
-	import services.MainMenuManager;
-	import sound.SoundManager;
+	import services.SoundManager;
 	import starling.core.Starling;
 	import starling.utils.RectangleUtil;
 	import starling.utils.ScaleMode;
-	import util.Assets;
 	import util.FlashStageHelper;
 	import util.LocaleUtil;
 	
@@ -46,36 +42,37 @@ package {
 			_starling.start();
 			
 			GameCenterManager.instance.initialize();
+			
 		}
 		
 		public static function onStarlingReady():void {
-			Assets.initialize(startAnimation);
+			//Assets.initialize(startAnimation);
 		}
 		
 		public static function startAnimation():void {
-			new IntroAnimationManager(initMenu);
+			//new IntroAnimationManager(initMenu);
 		}
 		
 		public static function initMenu():void {
-			new MainMenuManager(onStartGame);
+			//new MainMenuManager(onStartGame);
 		}
 		
 		public static function onStartGame(e:TimerEvent = null):void {
-			new GameManager(initMenu);
+			//new GameManager(initMenu);
 		}
 		
 		private function activate(e:Event):void {
 			_starling.start();
 			SoundManager.instance.unpauseAll();
-			if (GameManager.instance) {
-				GameManager.instance.paused = false;
-			}
+			//if (GameManager.instance) {
+				//GameManager.instance.paused = false;
+			//}
 		}
 		
 		private function deactivate(e:Event):void {
-			if (GameManager.instance) {
-				GameManager.instance.paused = true;
-			}
+			//if (GameManager.instance) {
+				//GameManager.instance.paused = true;
+			//}
 			SoundManager.instance.pauseAll();
 			_starling.stop(true);
 		}

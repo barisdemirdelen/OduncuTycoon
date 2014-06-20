@@ -1,7 +1,7 @@
 package model {
 	import flash.events.TimerEvent;
 	import flash.geom.Rectangle;
-	import sound.SoundManager;
+	import services.SoundManager;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.MovieClip;
 	import util.Assets;
@@ -25,8 +25,8 @@ package model {
 			_explodeClip.loop = false;
 			_explodeClip.stop();
 			_facingRight = true;
-			_health = 10;
-			_maxHealth = 10;
+			_health = 100;
+			_maxHealth = 100;
 			_container.addChild(_clip);
 		}
 		

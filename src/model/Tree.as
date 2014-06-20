@@ -2,7 +2,7 @@ package model {
 	import aze.motion.eaze;
 	import flash.geom.Rectangle;
 	import model.Creature;
-	import sound.SoundManager;
+	import services.SoundManager;
 	import starling.core.Starling;
 	import starling.display.DisplayObjectContainer;
 	import starling.display.MovieClip;
