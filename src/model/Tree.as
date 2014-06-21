@@ -67,11 +67,13 @@ package model {
 		}
 		
 		public function deathDance():void {
-			_clip.scaleX *= -1;
-			if (_clip.scaleX < 0) {
-				_clip.x += _clip.width
-			} else {
-				_clip.x -= _clip.width
+			if(_clip) {
+				_clip.scaleX *= -1;
+				if (_clip.scaleX < 0) {
+					_clip.x += _clip.width
+				} else {
+					_clip.x -= _clip.width
+				}
 			}
 		}
 		

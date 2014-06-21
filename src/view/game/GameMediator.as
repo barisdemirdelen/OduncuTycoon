@@ -6,6 +6,7 @@ package view.game {
 	import flash.geom.Rectangle;
 	import flash.utils.Timer;
 	import model.Adam;
+	import model.PlayerData;
 	import model.Tree;
 	import robotlegs.extensions.starlingViewMap.impl.StarlingMediator;
 	import services.AdmobService;
@@ -49,6 +50,9 @@ package view.game {
 		[Inject]
 		public var gameStateManager:GameStateManager;
 		
+		[Inject]
+		public var playerData:PlayerData;
+		
 		private var _stage:Stage;
 		private var _gameTimer:Timer;
 		private var _finishTimer:Timer;
@@ -76,6 +80,12 @@ package view.game {
 			_adam = new Adam();
 			_adam.y = _stage.stageHeight - _adam.clip.height + 5;
 			_adam.x = _stage.stageWidth / 2 - _adam.clip.width / 2;
+			_adam.creatureDyingSignal.addOnce(onAdamDying);
+			_adam.creatureTookDamageSignal.add(onAdamTookDamage);
+			_adam.attackDamage = playerData.attackDamage;
+			_adam.attackSpeed = playerData.attackSpeed;
+			_adam.maxHealth = playerData.health;
+			_adam.health = playerData.health;
 			view.adamLayer.addChild(_adam.container);
 			
 			_gameTimer = new Timer(50);
@@ -85,8 +95,6 @@ package view.game {
 			treeGeneratedSignal.add(onTreeCreated);
 			treeGeneratorService.start(view.treeLayer);
 			
-			_adam.creatureDyingSignal.addOnce(onAdamDying);
-			_adam.creatureTookDamageSignal.add(onAdamTookDamage);
 			view.gameScene.addEventListener(TouchEvent.TOUCH, onClick);
 			Starling.current.stage.addEventListener(EnterFrameEvent.ENTER_FRAME, onFrame);
 			
@@ -140,7 +148,7 @@ package view.game {
 			_trees.push(tree);
 			tree.creatureTookDamageSignal.add(onTreeTookDamage);
 			tree.creatureDyingSignal.addOnce(onTreeDying);
-			tree.creatureDeadSignal.addOnce(onTreeDying);
+			tree.creatureDeadSignal.addOnce(onTreeDead);
 		}
 		
 		private function onTreeDying(tree:Tree):void {

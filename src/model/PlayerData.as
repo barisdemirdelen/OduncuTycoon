@@ -6,23 +6,12 @@ package model {
 	 */
 	public class PlayerData {
 		
-		private static var _instance:PlayerData;
-		
 		private var _currentWood:Number;
 		private var _totalWood:Number;
 		
-		private var _attackDamage:Number;
-		private var _attackSpeed:Number;
-		
-		public function PlayerData() {
-			if (_instance) {
-				return;
-			}
-		}
-		
-		public static function get instance():void {
-			return _instance;
-		}
+		private var _attackDamage:Number = 1;
+		private var _attackSpeed:Number = 1;
+		private var _health:Number = 4;
 		
 		public function get attackDamage():Number {
 			return _attackDamage;
@@ -54,6 +43,14 @@ package model {
 		
 		public function set totalWood(value:Number):void {
 			_totalWood = value;
+		}
+		
+		public function get health():Number {
+			return _health;
+		}
+		
+		public function set health(value:Number):void {
+			_health = value;
 		}
 	
 	}

@@ -37,7 +37,7 @@ package services {
 				return;
 			}
 			
-			_treeSpeed = 0.95;
+			_treeSpeed = 1;
 			_treeHealth = 3;
 			_treeDamage = 1;
 			_treeInterval = 4000;
@@ -57,8 +57,9 @@ package services {
 			
 			_treeHealth = _treeHealth * DIFFICULTY;
 			_treeDamage = _treeDamage * DIFFICULTY;
-			_treeAttackSpeed = Math.max(0.025, _treeAttackSpeed - 0.025);
+			_treeAttackSpeed = Math.max(0.1, _treeAttackSpeed - 0.025);
 			_treeInterval = Math.max(100, _treeInterval - 100);
+			_treeSpeed = Math.min(3, _treeSpeed + 0.1);
 		}
 		
 		protected function onGenerateTree(e:TimerEvent):void {

@@ -54,7 +54,7 @@ package model {
 			if (isHitting()) {
 				return;
 			}
-			_hitTimer = new Timer(1000 / _attackSpeed);
+			_hitTimer = new Timer(1000 * _attackSpeed);
 			_hitTimer.addEventListener(TimerEvent.TIMER, onHit);
 			_hitTimer.start();
 		}

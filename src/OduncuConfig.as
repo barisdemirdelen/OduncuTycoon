@@ -1,4 +1,5 @@
 package {
+	import model.PlayerData;
 	import robotlegs.bender.extensions.contextView.ContextView;
 	import robotlegs.bender.extensions.eventCommandMap.api.IEventCommandMap;
 	import robotlegs.bender.extensions.mediatorMap.api.IMediatorMap;
@@ -54,6 +55,7 @@ package {
 			injector.map(TreeGeneratorService).asSingleton();
 			injector.map(GameStateManager).asSingleton();
 			injector.map(AdmobService).asSingleton();
+			injector.map(PlayerData).asSingleton();
 			
 			injector.map(ChangeScreenSignal).asSingleton();
 			injector.map(TreeGeneratedSignal).asSingleton();

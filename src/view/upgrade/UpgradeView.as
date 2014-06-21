@@ -6,6 +6,7 @@ package view.upgrade {
 	import feathers.layout.AnchorLayoutData;
 	import feathers.layout.HorizontalLayout;
 	import feathers.layout.TiledRowsLayout;
+	import feathers.layout.VerticalLayout;
 	import starling.core.Starling;
 	import starling.display.MovieClip;
 	import themes.OduncuTheme;
@@ -18,12 +19,14 @@ package view.upgrade {
 	public class UpgradeView extends LayoutGroup {
 		
 		private var _upgradesContainer:ScrollContainer;
+		private var _statsContainer:ScrollContainer;
 		private var _mainContainer:LayoutGroup;
 		private var _backButton:Button;
 		
 		public function UpgradeView() {
 			_mainContainer = new LayoutGroup();
 			_upgradesContainer = new ScrollContainer();
+			_statsContainer = new ScrollContainer();
 			_backButton = new Button();
 		}
 		
@@ -44,7 +47,7 @@ package view.upgrade {
 			backButtonLayoutData.bottom = 15;
 			backButtonLayoutData.horizontalCenter = 0;
 			_backButton.layoutData = backButtonLayoutData;
-			_mainContainer.addChild(_backButton)
+			_mainContainer.addChild(_backButton);
 			
 			_upgradesContainer.setSize(600, 100);
 			var upgradesContainerLayoutData:AnchorLayoutData = new AnchorLayoutData();
@@ -57,6 +60,20 @@ package view.upgrade {
 			_upgradesContainer.layout = upgradesContainerLayout;
 			_upgradesContainer.clipContent = true;
 			_mainContainer.addChild(_upgradesContainer);
+			
+			_statsContainer.setSize(400, 200);
+			var statsContainerLayoutData:AnchorLayoutData = new AnchorLayoutData();
+			statsContainerLayoutData.bottom = 15;
+			statsContainerLayoutData.bottomAnchorDisplayObject = _upgradesContainer;
+			statsContainerLayoutData.horizontalCenter = 0;
+			_statsContainer.layoutData = statsContainerLayoutData;
+			var statsContainerLayout:VerticalLayout = new VerticalLayout();
+			statsContainerLayout.horizontalAlign = VerticalLayout.HORIZONTAL_ALIGN_LEFT;
+			statsContainerLayout.verticalAlign = VerticalLayout.VERTICAL_ALIGN_BOTTOM;
+			_statsContainer.layout = statsContainerLayout;
+			_statsContainer.clipContent = true;
+			_mainContainer.addChild(_statsContainer);
+		
 		}
 		
 		public function get upgradesContainer():ScrollContainer {
@@ -65,6 +82,10 @@ package view.upgrade {
 		
 		public function get backButton():Button {
 			return _backButton;
+		}
+		
+		public function get statsContainer():ScrollContainer {
+			return _statsContainer;
 		}
 	
 	}
