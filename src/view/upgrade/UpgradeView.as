@@ -49,7 +49,7 @@ package view.upgrade {
 			_backButton.layoutData = backButtonLayoutData;
 			_mainContainer.addChild(_backButton);
 			
-			_upgradesContainer.setSize(600, 100);
+			_upgradesContainer.setSize(600, 125);
 			var upgradesContainerLayoutData:AnchorLayoutData = new AnchorLayoutData();
 			upgradesContainerLayoutData.bottom = 15;
 			upgradesContainerLayoutData.bottomAnchorDisplayObject = _backButton;

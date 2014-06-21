@@ -28,9 +28,9 @@ package view.upgrade {
 			
 			updateStats();
 			
-			view.upgradesContainer.addChild(createUpgradeButton("damage"));
-			view.upgradesContainer.addChild(createUpgradeButton("attackSpeed"));
-			view.upgradesContainer.addChild(createUpgradeButton("health"));
+			view.upgradesContainer.addChild(createUpgradeButton("damage", " damage +1", "cost 1"));
+			view.upgradesContainer.addChild(createUpgradeButton("attackSpeed", "attack speed +1", "cost 1"));
+			view.upgradesContainer.addChild(createUpgradeButton("health", "health +1", "cost 1"));
 			
 			view.backButton.addEventListener(Event.TRIGGERED, onBackTriggered);
 		}
@@ -49,12 +49,13 @@ package view.upgrade {
 			return label;
 		}
 		
-		public function createUpgradeButton(name:String):Button {
-			var button:Button = new Button();
+		public function createUpgradeButton(name:String, header:String, description:String):Button {
+			var button:UpgradeButton = new UpgradeButton();
 			button.name = name;
 			button.styleName = OduncuTheme.UPGRADE_BUTTON;
-			button.setSize(125, 75);
-			button.label = name;
+			//button.setSize(125, 75);
+			button.headerLabel.text = header;
+			button.descriptionLabel.text = description;
 			button.addEventListener(Event.TRIGGERED, onUpgradeButtonTriggered);
 			return button;
 		}
