@@ -53,6 +53,10 @@ package view.mainMenu {
 		private function onStartClick(e:Event):void {
 			view.startButton.removeEventListener(MouseEvent.CLICK, onStartClick);
 			
+			view.upgradeButton.visible = false;
+			view.highScoreButton.visible = false;
+			view.achievementButton.visible = false;
+			
 			SoundManager.instance.playTestereTurnOnSound();
 			
 			var header:MovieClip = MovieClip(MovieClip(view).mainMenu).getChildByName("txtHeader") as MovieClip;
@@ -70,6 +74,7 @@ package view.mainMenu {
 			view.startButton.removeEventListener(MouseEvent.CLICK, onStartClick);
 			view.highScoreButton.removeEventListener(MouseEvent.CLICK, onHighScoresClick);
 			view.achievementButton.removeEventListener(MouseEvent.CLICK, onAchievementClick);
+			view.upgradeButton.removeEventListener(MouseEvent.CLICK, onUpgradeClick);
 			
 			if (_oynakTimer) {
 				_oynakTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, destroy);

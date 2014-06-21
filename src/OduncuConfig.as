@@ -22,6 +22,8 @@ package {
 	import view.intro.IntroAnimationView;
 	import view.mainMenu.MainMenuMediator;
 	import view.mainMenu.MainMenuView;
+	import view.upgrade.UpgradeMediator;
+	import view.upgrade.UpgradeView;
 	
 	/**
 	 * ...
@@ -60,6 +62,7 @@ package {
 			mediatorMap.map(MainMenuView).toMediator(MainMenuMediator);
 			mediatorMap.map(GameView).toMediator(GameMediator);
 			mediatorMap.map(DeathPopupView).toMediator(DeathPopupMediator);
+			mediatorMap.map(UpgradeView).toMediator(UpgradeMediator);
 			
 			contextView.view.addChild(MainFlashView(injector.getInstance(MainFlashView)));
 			ScreenManager(injector.getInstance(ScreenManager)).initialize(); 
