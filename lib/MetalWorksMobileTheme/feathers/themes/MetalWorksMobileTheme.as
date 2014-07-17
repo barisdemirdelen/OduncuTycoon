@@ -22,54 +22,49 @@
  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  OTHER DEALINGS IN THE SOFTWARE.
  */
-package feathers.themes
-{
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
+package feathers.themes {
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 
-	import starling.events.Event;
-	import starling.textures.Texture;
-	import starling.textures.TextureAtlas;
+import starling.events.Event;
+import starling.textures.Texture;
+import starling.textures.TextureAtlas;
 
-	/**
-	 * The "Metal Works" theme for mobile Feathers apps.
-	 *
-	 * <p>This version of the theme embeds its assets. To load assets at
-	 * runtime, see <code>MetalWorksMobileThemeWithAssetManager</code> instead.</p>
-	 *
-	 * @see http://wiki.starling-framework.org/feathers/theme-assets
-	 */
-	public class MetalWorksMobileTheme extends BaseMetalWorksMobileTheme
-	{
-		[Embed(source="/../bin/images/metalworks.xml",mimeType="application/octet-stream")]
-		public static const ATLAS_XML:Class;
+/**
+ * The "Metal Works" theme for mobile Feathers apps.
+ *
+ * <p>This version of the theme embeds its assets. To load assets at
+ * runtime, see <code>MetalWorksMobileThemeWithAssetManager</code> instead.</p>
+ *
+ * @see http://wiki.starling-framework.org/feathers/theme-assets
+ */
+public class MetalWorksMobileTheme extends BaseMetalWorksMobileTheme {
+    [Embed(source="/images/metalworks.xml", mimeType="application/octet-stream")]
+    public static const ATLAS_XML:Class;
 
-		[Embed(source="/../bin/images/metalworks.png")]
-		public static const ATLAS_BITMAP:Class;
+    [Embed(source="/images/metalworks.png")]
+    public static const ATLAS_BITMAP:Class;
 
-		public function MetalWorksMobileTheme(scaleToDPI:Boolean = true)
-		{
-			super(scaleToDPI);
-			this.initialize();
-			this.dispatchEventWith(Event.COMPLETE);
-		}
+    public function MetalWorksMobileTheme(scaleToDPI:Boolean = true) {
+        super(scaleToDPI);
+        this.initialize();
+        this.dispatchEventWith(Event.COMPLETE);
+    }
 
-		override protected function initialize():void
-		{
-			var atlasBitmapData:BitmapData = Bitmap(new ATLAS_BITMAP()).bitmapData;
-			this.atlasTexture = Texture.fromBitmapData(atlasBitmapData, false);
-			this.atlasTexture.root.onRestore = this.atlasTexture_onRestore;
-			atlasBitmapData.dispose();
-			this.atlas = new TextureAtlas(atlasTexture, XML(new ATLAS_XML()));
+    override protected function initialize():void {
+        var atlasBitmapData:BitmapData = Bitmap(new ATLAS_BITMAP()).bitmapData;
+        this.atlasTexture = Texture.fromBitmapData(atlasBitmapData, false);
+        this.atlasTexture.root.onRestore = this.atlasTexture_onRestore;
+        atlasBitmapData.dispose();
+        this.atlas = new TextureAtlas(atlasTexture, XML(new ATLAS_XML()));
 
-			super.initialize();
-		}
+        super.initialize();
+    }
 
-		protected function atlasTexture_onRestore():void
-		{
-			var atlasBitmapData:BitmapData = Bitmap(new ATLAS_BITMAP()).bitmapData;
-			this.atlasTexture.root.uploadBitmapData(atlasBitmapData);
-			atlasBitmapData.dispose();
-		}
-	}
+    protected function atlasTexture_onRestore():void {
+        var atlasBitmapData:BitmapData = Bitmap(new ATLAS_BITMAP()).bitmapData;
+        this.atlasTexture.root.uploadBitmapData(atlasBitmapData);
+        atlasBitmapData.dispose();
+    }
+}
 }
